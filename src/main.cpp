@@ -31,7 +31,6 @@ bool initialMouseEnter = true;
 
 Camera camera = Camera(glm::vec3(0, 0, 3));
 
-float pitch, yaw;
 float fov = 45.0f;
 
 int main()

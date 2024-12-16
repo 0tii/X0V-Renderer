@@ -15,7 +15,9 @@
     "titleBar.activeBackground": "#e4989f",
     "titleBar.activeForeground": "#15202b",
     "titleBar.inactiveBackground": "#e4989f99",
-    "titleBar.inactiveForeground": "#15202b99"
+    "titleBar.inactiveForeground": "#15202b99",
+    "statusBar.background": "#e4989f",
+    "statusBar.foreground": "#15202b"
   },
   "peacock.color": "#e4989f",
   "myWorkspaceFolder": "H:/Projects/AbandonedCrypt/FirstSoloSteps",
