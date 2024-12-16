@@ -11,7 +11,7 @@ public:
   Texture(const char *imagePath, GLenum colorProfile, bool flipped = true);
   ~Texture();
 
-  void bind(unsigned int textureUnit);
+  void bind(unsigned int textureUnit = 0);
   void unbind();
 
   void setWrappingMode(GLenum modeS, GLenum modeT);
