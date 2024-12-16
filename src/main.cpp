@@ -46,8 +46,8 @@ int main()
   window.setScrollCallback(scroll_callback);
 
   // create textures
-  Texture crateTexture = Texture("../resources/textures/container.jpg", true, GL_RGB);
-  Texture smileyTexture = Texture("../resources/textures/awesomeface.png");
+  Texture crateTexture = Texture("../resources/textures/container.jpg", GL_RGB);
+  Texture smileyTexture = Texture("../resources/textures/awesomeface.png", GL_RGBA);
 
   // create our shader
   Shader ourShader("../resources/shaders/shader.vert", "../resources/shaders/shader.frag");
