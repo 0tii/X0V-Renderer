@@ -6,10 +6,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "core/renderer/shader/Shader.h"
-#include "core/renderer/camera/Camera.h"
-#include "core/renderer/window/window.h"
-#include "core/renderer/texture/Texture.h"
+#include "renderer/shader/Shader.h"
+#include "renderer/camera/Camera.h"
+#include "renderer/window/window.h"
+#include "renderer/texture/Texture.h"
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window, float *textureBlendFactor);

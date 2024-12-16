@@ -20,6 +20,9 @@ link_directories(${CMAKE_SOURCE_DIR}/../Deps/lib)
 # Add glad.c to the source list
 set(SOURCES ${SOURCES} ${CMAKE_SOURCE_DIR}/../Deps/src/glad.c)
 
+# Add the stb_image.cpp file to the source list
+set(SOURCES ${SOURCES} ${CMAKE_SOURCE_DIR}/../Deps/include/stbi/stb_image.cpp)
+
 # Add the executable
 add_executable(AbandonedCrypt ${SOURCES})
 
