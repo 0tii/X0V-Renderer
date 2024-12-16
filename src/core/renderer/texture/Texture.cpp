@@ -1,6 +1,6 @@
 #include "Texture.h"
 
-Texture::Texture(const char *imagePath, bool flipped, GLenum colorProfile)
+Texture::Texture(const char *imagePath, GLenum colorProfile, bool flipped)
 {
   stbi_set_flip_vertically_on_load(flipped);
 

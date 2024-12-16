@@ -8,7 +8,7 @@
 class Texture
 {
 public:
-  Texture(const char *imagePath, bool flipped = true, GLenum colorProfile = GL_RGBA);
+  Texture(const char *imagePath, GLenum colorProfile, bool flipped = true);
   ~Texture();
 
   void bind(unsigned int textureUnit);
