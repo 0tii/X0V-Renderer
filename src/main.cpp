@@ -8,8 +8,8 @@
 
 #include "core/renderer/shader/Shader.h"
 #include "core/renderer/camera/Camera.h"
-#include "lib/image-loading/stb_image.h"
 #include "core/renderer/window/window.h"
+#include "core/renderer/texture/Texture.h"
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window, float *textureBlendFactor);
@@ -18,9 +18,6 @@ void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
 
 unsigned int setupQuadFromTriangles();
 unsigned int setupCube();
-unsigned int setupShader();
-unsigned int setupJpegTexture(const char *path);
-unsigned int setupPngTexture(const char *path);
 
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
@@ -48,6 +45,10 @@ int main()
   window.setMouseMoveCallback(mouse_callback);
   window.setScrollCallback(scroll_callback);
 
+  // create textures
+  Texture crateTexture = Texture("../resources/textures/container.jpg", true, GL_RGB);
+  Texture smileyTexture = Texture("../resources/textures/awesomeface.png");
+
   // create our shader
   Shader ourShader("../resources/shaders/shader.vert", "../resources/shaders/shader.frag");
 
@@ -58,8 +59,6 @@ int main()
   ourShader.setInt("texture2", 1);
 
   unsigned int VAO = setupCube();
-  unsigned int textureA = setupJpegTexture("../resources/textures/container.jpg");
-  unsigned int textureB = setupPngTexture("../resources/textures/awesomeface.png");
 
   glm::vec3 cubePositions[] = {
       glm::vec3(0.0f, 0.0f, 0.0f),
@@ -80,17 +79,16 @@ int main()
     glEnable(GL_BLEND); // enable blending function to allow for transparency
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    // enables depth testing, openGL will keep a depth buffer (z-buffer) to keep track of what to render on top of what
+    // it allows rendering one thing in front of another and hiding the back object
     glEnable(GL_DEPTH_TEST);
 
     // rendering logic...
     glClearColor(.4f, .0f, .6f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, textureA);
-
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, textureB);
+    crateTexture.bind(0);
+    smileyTexture.bind(1);
 
     glBindVertexArray(VAO); // Bind the VAO before drawing
 
@@ -206,75 +204,6 @@ unsigned int setupCube()
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 
   return VAO;
-}
-
-unsigned int setupPngTexture(const char *imagePath)
-{
-  stbi_set_flip_vertically_on_load(true);
-  int width, height, nrChannels;
-  // load the specified image
-  unsigned char *imageData = stbi_load(imagePath, &width, &height, &nrChannels, 0);
-
-  if (!imageData)
-  {
-    std::cout << "Failed to load texture" << std::endl;
-  }
-
-  unsigned int textureId;
-  glGenTextures(1, &textureId); // create texture object
-
-  glActiveTexture(GL_TEXTURE1);            // set active texture unit
-  glBindTexture(GL_TEXTURE_2D, textureId); // bind texture to tex2d
-
-  // set up parameters
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-  // generate the image in the texture object
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
-  glGenerateMipmap(GL_TEXTURE_2D);
-
-  stbi_image_free(imageData);
-
-  return textureId;
-}
-
-unsigned int setupJpegTexture(const char *imagePath)
-{
-  stbi_set_flip_vertically_on_load(true);
-  // load the wooden crate texture
-  int width, height, nrChannels;
-  unsigned char *imageData = stbi_load(imagePath, &width, &height, &nrChannels, 0);
-
-  if (!imageData)
-  {
-    std::cout << "Failed to load texture" << std::endl;
-  }
-
-  // generate the texture object
-  unsigned int textureId;
-  glGenTextures(1, &textureId);
-
-  glActiveTexture(GL_TEXTURE0); // activate the texture unit BEFORE binding the texture
-  glBindTexture(GL_TEXTURE_2D, textureId);
-
-  // set the texture parameters
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // set the texture wrapping to repeat on S and T (texture x and y)
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-  // generate the texture image in the texture object
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, imageData);
-  glGenerateMipmap(GL_TEXTURE_2D);
-
-  stbi_image_free(imageData);
-
-  return textureId;
 }
 
 unsigned int setupQuadFromTriangles()
