@@ -26,4 +26,5 @@
     "*.uss": "css",
     "*.rh": "cpp"
   },
+  "C_Cpp.intelliSenseMemoryLimit": 4096,
 }
