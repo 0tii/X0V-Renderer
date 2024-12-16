@@ -1,0 +1,35 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "CMake: configure",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "-S",
+        "${config:myWorkspaceFolder}",
+        "-B",
+        "${config:myWorkspaceFolder}/build"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": ["$gcc"],
+      "detail": "Generated task for CMake configuration."
+    },
+    {
+      "label": "CMake: build",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "--build",
+        "${config:myWorkspaceFolder}/build"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
+}

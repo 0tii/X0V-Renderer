@@ -1,0 +1,22 @@
+{
+  "workbench.colorCustomizations": {
+    "terminal.background": "#00000000",
+    "activityBar.activeBackground": "#efc0c5",
+    "activityBar.background": "#efc0c5",
+    "activityBar.foreground": "#15202b",
+    "activityBar.inactiveForeground": "#15202b99",
+    "activityBarBadge.background": "#339927",
+    "activityBarBadge.foreground": "#e7e7e7",
+    "commandCenter.border": "#15202b99",
+    "sash.hoverBorder": "#efc0c5",
+    "statusBarItem.hoverBackground": "#d97079",
+    "statusBarItem.remoteBackground": "#e4989f",
+    "statusBarItem.remoteForeground": "#15202b",
+    "titleBar.activeBackground": "#e4989f",
+    "titleBar.activeForeground": "#15202b",
+    "titleBar.inactiveBackground": "#e4989f99",
+    "titleBar.inactiveForeground": "#15202b99"
+  },
+  "peacock.color": "#e4989f",
+  "myWorkspaceFolder": "H:/Projects/AbandonedCrypt/FirstSoloSteps",
+}
