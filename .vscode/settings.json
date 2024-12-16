@@ -19,4 +19,11 @@
   },
   "peacock.color": "#e4989f",
   "myWorkspaceFolder": "H:/Projects/AbandonedCrypt/FirstSoloSteps",
+  "files.associations": {
+    "*.erd": "json",
+    "*.vuerd": "json",
+    "*.php": "php",
+    "*.uss": "css",
+    "*.rh": "cpp"
+  },
 }
