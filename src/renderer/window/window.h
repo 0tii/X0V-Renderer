@@ -13,9 +13,9 @@ public:
   GLFWwindow *create(const char *title, unsigned int width, unsigned int height);
 
   // properties
-  bool shouldClose();
-  void swapBuffers();
-  void pollEvents();
+  bool shouldClose() const;
+  void swapBuffers() const;
+  void pollEvents() const;
 
   // setters
   void setViewPort(unsigned int width, unsigned int height);

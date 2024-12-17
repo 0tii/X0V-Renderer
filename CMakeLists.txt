@@ -11,6 +11,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Add source files
 file(GLOB_RECURSE SOURCES src/*.cpp)
 
+# Exclude specific files if necessary
+list(REMOVE_ITEM SOURCES ${CMAKE_SOURCE_DIR}/src/renderer/mesh/VertexAttribute.cpp)
+
 # Include directories
 include_directories(${CMAKE_SOURCE_DIR}/../Deps/include)
 

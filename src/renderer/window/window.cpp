@@ -42,17 +42,17 @@ GLFWwindow *GLWindow::create(const char *title, unsigned int width, unsigned int
 }
 
 // Properties
-bool GLWindow::shouldClose()
+bool GLWindow::shouldClose() const
 {
   return glfwWindowShouldClose(window);
 }
 
-void GLWindow::pollEvents()
+void GLWindow::pollEvents() const
 {
   glfwPollEvents();
 }
 
-void GLWindow::swapBuffers()
+void GLWindow::swapBuffers() const
 {
   glfwSwapBuffers(window);
 }
