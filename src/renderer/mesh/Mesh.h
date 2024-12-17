@@ -25,7 +25,6 @@ public:
   void unbind() const;
   void draw() const;
   void drawWireframe() const;
-  void free();
 
 private:
   std::vector<float> vertices;
@@ -34,4 +33,5 @@ private:
   unsigned int VBO = 0, VAO = 0, EBO = 0;
 
   void setupMesh();
+  void free();
 };
