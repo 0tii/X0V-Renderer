@@ -16,14 +16,10 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window, float *textureBlendFactor);
 void mouse_callback(GLFWwindow *window, double xpos, double ypos);
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
-
 std::unique_ptr<Mesh> buildMesh();
 
-unsigned int setupQuadFromTriangles();
-unsigned int setupCube();
-
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+const unsigned int SCR_WIDTH = 1280;
+const unsigned int SCR_HEIGHT = 720;
 
 float deltaTime = .0f;
 float lastFrame = .0f;
@@ -60,9 +56,6 @@ int main()
 
   auto cubeMeshPtr = buildMesh();
   Mesh &cubeMesh = *cubeMeshPtr;
-
-  //! auto VAO = setupCube();
-  //! glBindVertexArray(VAO);
 
   float textureBlendFactor = 0.2f;
 
@@ -118,7 +111,6 @@ int main()
       ourShader.setMat4("model", model);
 
       cubeMesh.draw();
-      //! glDrawArrays(GL_TRIANGLES, 0, 36);
     }
 
     window.swapBuffers();
@@ -182,118 +174,6 @@ std::unique_ptr<Mesh> buildMesh()
       VertexAttribute(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), 3 * sizeof(float))};
 
   return std::make_unique<Mesh>(vertices, sizeof(vertices) / sizeof(float), vertexAttributes);
-}
-
-unsigned int setupCube()
-{
-  float vertices[] = {
-      -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
-      0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
-      0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-      0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-      -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
-      -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
-
-      -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-      0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
-      0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
-      0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
-      -0.5f, 0.5f, 0.5f, 0.0f, 1.0f,
-      -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-
-      -0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-      -0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-      -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-      -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-      -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-      -0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-
-      0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-      0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-      0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-      0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-      0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-      0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-
-      -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-      0.5f, -0.5f, -0.5f, 1.0f, 1.0f,
-      0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
-      0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
-      -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-      -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-
-      -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
-      0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-      0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-      0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-      -0.5f, 0.5f, 0.5f, 0.0f, 0.0f,
-      -0.5f, 0.5f, -0.5f, 0.0f, 1.0f};
-
-  unsigned int VAO, VBO;
-
-  glGenBuffers(1, &VBO);
-  glGenVertexArrays(1, &VAO);
-
-  glBindVertexArray(VAO);
-
-  glBindBuffer(GL_ARRAY_BUFFER, VBO);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)0);
-  glEnableVertexAttribArray(0);
-
-  // DO NOT FORGET THE OFFSET!!
-  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)(3 * sizeof(float)));
-  glEnableVertexAttribArray(1);
-
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-  return VAO;
-}
-
-unsigned int setupQuadFromTriangles()
-{
-  //------------------- declare vertices
-
-  float vertices[] = {
-      // positions          // colors           // texture coords
-      0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,   // top right
-      0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,  // bottom right
-      -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left
-      -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f   // top left
-  };
-
-  unsigned int indices[] = {
-      0, 1, 3,
-      1, 2, 3 //
-  };
-
-  //--------------- create vertex buffer and vertex array and entity buffer
-  unsigned int VBO, VAO, EBO;
-  glGenVertexArrays(1, &VAO); // generate a vertex array object VAO
-  glGenBuffers(1, &VBO);      // generate a vertex buffer object VBO
-  glGenBuffers(1, &EBO);      // generate entity buffer object
-
-  glBindVertexArray(VAO); // first bind the VAO
-
-  glBindBuffer(GL_ARRAY_BUFFER, VBO);                                        // we bind the VBO so the VAO can record it
-  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW); // we send the buffer data to the GPU
-
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);                                      // bind the EBO so VAO can record it
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW); // send the EBO data to the GPU
-
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)0); // we tell the VAO how to interpret the position vertices
-  glEnableVertexAttribArray(0);                                                  // we enable the position attribute (layout location 0)
-
-  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(3 * sizeof(float))); // we tell the VAO how to interpret our color values from the vertices array
-  glEnableVertexAttribArray(1);                                                                    // we enable the color attribute (layout location 1)
-
-  glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(6 * sizeof(float))); // its the 2nd value, 2 floats long, 8 floats to the next value, starting after the 6th float
-  glEnableVertexAttribArray(2);                                                                    // enable the layout attrbiute "location 2" in the vertex shader
-
-  glBindBuffer(GL_ARRAY_BUFFER, 0); // we unbind the VBO as we dont need it anymore
-
-  return VAO;
 }
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height)
