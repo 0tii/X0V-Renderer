@@ -4,12 +4,20 @@ out vec4 FragColor;
 
 in vec2 TexCoord;
 
-uniform sampler2D texture1;
-uniform sampler2D texture2;
+struct Material
+{
+  sampler2D diffuse;
+  sampler2D specular;
+  float shininess;
+};
+
+uniform Material material;
 
 uniform float blendFactor;
 
 void main()
 {
-    FragColor = mix(texture(texture1, TexCoord), texture(texture2, TexCoord), blendFactor);
+  vec4 diffuseColor = texture(material.diffuse, TexCoord);
+  vec4 specularColor = texture(material.specular, TexCoord);
+  FragColor = diffuseColor;
 };

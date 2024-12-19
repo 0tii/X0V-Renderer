@@ -11,9 +11,10 @@
 #include "renderer/window/window.h"
 #include "renderer/texture/Texture.h"
 #include "renderer/mesh/Mesh.h"
+#include "renderer/material/Material.h"
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
-void processInput(GLFWwindow *window, float *textureBlendFactor);
+void processInput(GLFWwindow *window);
 void mouse_callback(GLFWwindow *window, double xpos, double ypos);
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
 std::unique_ptr<Mesh> buildMesh();
@@ -43,21 +44,23 @@ int main()
   window.setMouseMoveCallback(mouse_callback);
   window.setScrollCallback(scroll_callback);
 
-  // create textures
-  Texture crateTexture = Texture("../resources/textures/container.jpg", GL_RGB);
-  Texture smileyTexture = Texture("../resources/textures/awesomeface.png", GL_RGBA);
-
   // create our shader
   Shader ourShader("../resources/shaders/shader.vert", "../resources/shaders/shader.frag");
 
-  ourShader.use();
-  ourShader.setInt("texture1", 0);
-  ourShader.setInt("texture2", 1);
+  // create textures
+  Texture diamondOreTexture = Texture("../resources/textures/mc_diamond_ore_texture.png", GL_RGBA);
+  Texture sandTexture = Texture("../resources/textures/mc_sand_texture.png", GL_RGBA);
+  Texture dirtTexture = Texture("../resources/textures/mc_dirt_texture.png", GL_RGBA);
+
+  Material materials[] = {
+      Material(ourShader, diamondOreTexture),
+      Material(ourShader, sandTexture),
+      Material(ourShader, dirtTexture)};
+
+  // create material
 
   auto cubeMeshPtr = buildMesh();
   Mesh &cubeMesh = *cubeMeshPtr;
-
-  float textureBlendFactor = 0.2f;
 
   glm::vec3 cubePositions[] = {
       glm::vec3(0.0f, 0.0f, 0.0f),
@@ -73,7 +76,7 @@ int main()
 
   while (!window.shouldClose())
   {
-    processInput(window.getWindow(), &textureBlendFactor);
+    processInput(window.getWindow());
 
     glEnable(GL_BLEND); // enable blending function to allow for transparency
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -83,14 +86,13 @@ int main()
     glEnable(GL_DEPTH_TEST);
 
     // rendering logic...
-    glClearColor(.4f, .0f, .6f, 1.0f);
+    glClearColor(.06f, .75f, .95f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    crateTexture.bind(0);
-    smileyTexture.bind(1);
+    // crateTexture.bind(0);
+    // smileyTexture.bind(1);
 
     ourShader.use();
-    ourShader.setFloat("blendFactor", textureBlendFactor);
 
     // create a perspective projection matrix  -- this kind of translates everything to screen coords
     glm::mat4 projection = glm::mat4(1.0f);
@@ -110,6 +112,7 @@ int main()
       model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
       ourShader.setMat4("model", model);
 
+      materials[2 - (i % 3)].bind();
       cubeMesh.draw();
     }
 
@@ -181,17 +184,12 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height)
   glViewport(0, 0, width, height);
 }
 
-void processInput(GLFWwindow *window, float *textureBlendFactor)
+void processInput(GLFWwindow *window)
 {
   const float cameraSpeed = 2.5f * deltaTime;
 
   if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     glfwSetWindowShouldClose(window, true);
-
-  if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-    *textureBlendFactor = std::min(1.0f, *textureBlendFactor + 0.05f);
-  if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-    *textureBlendFactor = std::max(0.0f, *textureBlendFactor - 0.05f);
 
   if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     camera.ProcessKeyboard(Camera_Movement::FORWARD, deltaTime);
