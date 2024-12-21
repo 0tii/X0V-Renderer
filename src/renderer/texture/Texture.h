@@ -16,6 +16,9 @@ public:
   void setWrappingMode(GLenum modeS, GLenum modeT);
   void setScalingFilter(GLenum minFilter, GLenum magFilter);
 
+  // getters
+  unsigned int getTextureId() const;
+
 private:
   unsigned int textureId = 0;
 

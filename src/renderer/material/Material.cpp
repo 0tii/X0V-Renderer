@@ -36,6 +36,11 @@ void Material::unbind() const
   }
 }
 
+Shader &Material::getShader() const
+{
+  return shader;
+}
+
 void Material::setShininess(float shininess)
 {
   this->shininess = shininess;

@@ -2,8 +2,8 @@
 
 #include <vector>
 
-#include "../Shader/Shader.h"
-#include "../Texture/Texture.h"
+#include "renderer/shader/Shader.h"
+#include "renderer/texture/Texture.h"
 
 class Material
 {
@@ -13,6 +13,9 @@ public:
 
   void bind() const;
   void unbind() const;
+
+  // getters
+  Shader &getShader() const;
 
   // setters
   void setShininess(float shininess);

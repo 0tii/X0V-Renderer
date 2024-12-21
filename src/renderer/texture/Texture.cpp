@@ -68,3 +68,9 @@ void Texture::setScalingFilter(GLenum minFilter, GLenum magFilter)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magFilter);
 }
+
+// getters
+unsigned int Texture::getTextureId() const
+{
+  return textureId;
+}

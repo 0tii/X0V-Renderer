@@ -12,6 +12,7 @@
 #include "renderer/texture/Texture.h"
 #include "renderer/mesh/Mesh.h"
 #include "renderer/material/Material.h"
+#include "renderer/material/DefaultMaterial.hpp"
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -112,8 +113,22 @@ int main()
       model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
       ourShader.setMat4("model", model);
 
-      materials[2 - (i % 3)].bind();
-      cubeMesh.draw();
+      /*
+      ! -----------------------------------------------
+      ^  Notiz an mich selbst
+      - du hast das problem der default materials gelöst indem du die transforms in die draw methode übernommen hast
+      - das material hat nicht gerendert, weil der shader, der mit dem mesh vercouplet ist, die transforms benötigt
+      - wir müssen mal mit o1 villt besprechen, wie dort die beste lösung ist
+      - wichtig ist zu überlegen ob das die beste lösung ist
+      - definitiv refactorn
+      ! -----------------------------------------------
+       */
+
+      // materials[2].bind();
+      if (i > 5)
+        cubeMesh.setMaterial(&materials[i % 3]);
+
+      cubeMesh.draw(projection, camera.GetViewMatrix(), model);
     }
 
     window.swapBuffers();

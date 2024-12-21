@@ -69,6 +69,8 @@ void Mesh::bind() const
 {
   glBindVertexArray(VAO);
 
+  this->material->bind();
+
   if (!indices.empty())
   {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
@@ -78,12 +80,15 @@ void Mesh::bind() const
 void Mesh::unbind() const
 {
   glBindVertexArray(0);
+  this->material->unbind();
   //? no need to unbind the EBO, as it is unbound when the VAO is unbound
 }
 
-void Mesh::draw() const
+void Mesh::draw(const glm::mat4 &projection, const glm::mat4 &view, const glm::mat4 &model) const
 {
   this->bind();
+  setTransforms(projection, view, model);
+
   if (indices.empty())
   {
     int numVertices = vertices.size() / (vertexAttributes[0].stride / sizeof(float));
@@ -96,11 +101,18 @@ void Mesh::draw() const
   this->unbind();
 }
 
-void Mesh::drawWireframe() const
+void Mesh::drawWireframe(const glm::mat4 &projection, const glm::mat4 &view, const glm::mat4 &model) const
 {
   glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-  this->draw();
+  this->draw(projection, view, model);
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
+
+void Mesh::setTransforms(const glm::mat4 &projection, const glm::mat4 &view, const glm::mat4 &model) const
+{
+  this->material->getShader().setMat4("projection", projection);
+  this->material->getShader().setMat4("view", view);
+  this->material->getShader().setMat4("model", model);
 }
 
 void Mesh::setupMesh()
@@ -109,6 +121,13 @@ void Mesh::setupMesh()
   {
     std::cerr << "Error: No vertex attributes provided for the mesh!" << std::endl;
     return;
+  }
+
+  this->material = &DefaultMaterial::getDefaultMaterial();
+
+  if (!this->material)
+  {
+    std::cerr << "Default material was not initialized correctly!\n";
   }
 
   glGenVertexArrays(1, &this->VAO);
@@ -131,4 +150,9 @@ void Mesh::setupMesh()
     glVertexAttribPointer(vA.layoutIndex, vA.size, vA.type, vA.normalized, vA.stride, vA.offset);
     glEnableVertexAttribArray(vA.layoutIndex);
   }
+}
+
+void Mesh::setMaterial(Material *material)
+{
+  this->material = material;
 }
