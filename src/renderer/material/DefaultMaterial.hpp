@@ -16,6 +16,8 @@ public:
     static Shader shader("../resources/shaders/shader.vert", "../resources/shaders/shader.frag");
     static Texture texture("../resources/textures/default_texture.png", GL_RGBA);
 
+    texture.setWrappingMode(GL_MIRRORED_REPEAT, GL_MIRRORED_REPEAT);
+
     if (texture.getTextureId() == 0)
     {
       std::cerr << "Default texture failed to load!\n";

@@ -7,6 +7,7 @@
 #include "renderer/material/Material.h"
 #include "renderer/material/DefaultMaterial.hpp"
 #include "renderer/mesh/VertexAttribute.h"
+#include "renderer/Renderer.h"
 
 class Mesh
 {
@@ -25,11 +26,10 @@ public:
 
   void bind() const;
   void unbind() const;
-  void draw(const glm::mat4 &projection, const glm::mat4 &view, const glm::mat4 &model) const;
-  void drawWireframe(const glm::mat4 &projection, const glm::mat4 &view, const glm::mat4 &model) const;
+  void draw(Renderer &renderer, const glm::mat4 modelMatrix) const;
+  void drawWireframe(Renderer &renderer, const glm::mat4 modelMatrix) const;
 
   // setters
-  void setTransforms(const glm::mat4 &projection, const glm::mat4 &view, const glm::mat4 &model) const;
   void setMaterial(Material *material);
 
 private:

@@ -13,6 +13,7 @@
 #include "renderer/mesh/Mesh.h"
 #include "renderer/material/Material.h"
 #include "renderer/material/DefaultMaterial.hpp"
+#include "renderer/Renderer.h"
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -26,11 +27,12 @@ const unsigned int SCR_HEIGHT = 720;
 float deltaTime = .0f;
 float lastFrame = .0f;
 
-float lastMouseX = 400.0f;
-float lastMouseY = 300.0f;
+float lastMouseX = SCR_WIDTH / 2;
+float lastMouseY = SCR_HEIGHT / 2;
 bool initialMouseEnter = true;
 
 Camera camera = Camera(glm::vec3(0, 0, 3));
+Renderer renderer = Renderer();
 
 float fov = 45.0f;
 
@@ -44,6 +46,10 @@ int main()
   window.setFramebufferSizeCallback(framebuffer_size_callback);
   window.setMouseMoveCallback(mouse_callback);
   window.setScrollCallback(scroll_callback);
+
+  // set up camera for renderer
+  camera.SetProjectionMatrix(fov, (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+  renderer.setCamera(&camera);
 
   // create our shader
   Shader ourShader("../resources/shaders/shader.vert", "../resources/shaders/shader.frag");
@@ -90,19 +96,6 @@ int main()
     glClearColor(.06f, .75f, .95f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // crateTexture.bind(0);
-    // smileyTexture.bind(1);
-
-    ourShader.use();
-
-    // create a perspective projection matrix  -- this kind of translates everything to screen coords
-    glm::mat4 projection = glm::mat4(1.0f);
-    // FOV              // width / height                     //near//far plane
-    projection = glm::perspective(glm::radians(fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-
-    ourShader.setMat4("view", camera.GetViewMatrix());
-    ourShader.setMat4("projection", projection);
-
     for (unsigned int i = 0; i < 10; i++)
     {
       glm::mat4 model = glm::mat4(1.0f);
@@ -111,7 +104,6 @@ int main()
       if (i % 3 == 0)
         angle *= (float)glfwGetTime();
       model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-      ourShader.setMat4("model", model);
 
       /*
       ! -----------------------------------------------
@@ -125,10 +117,10 @@ int main()
        */
 
       // materials[2].bind();
-      if (i > 5)
-        cubeMesh.setMaterial(&materials[i % 3]);
+      // if (i > 5)
+      //   cubeMesh.setMaterial(&materials[i % 3]);
 
-      cubeMesh.draw(projection, camera.GetViewMatrix(), model);
+      cubeMesh.draw(renderer, model);
     }
 
     window.swapBuffers();

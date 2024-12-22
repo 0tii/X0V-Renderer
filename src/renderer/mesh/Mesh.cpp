@@ -84,10 +84,18 @@ void Mesh::unbind() const
   //? no need to unbind the EBO, as it is unbound when the VAO is unbound
 }
 
-void Mesh::draw(const glm::mat4 &projection, const glm::mat4 &view, const glm::mat4 &model) const
+void Mesh::draw(Renderer &renderer, const glm::mat4 modelMatrix) const
 {
+  if (!material)
+  {
+    std::cerr << "No material set for the mesh!" << std::endl;
+    return;
+  }
+
   this->bind();
-  setTransforms(projection, view, model);
+
+  renderer.applyCameraTransforms(this->material->getShader());
+  this->material->getShader().setMat4("model", modelMatrix);
 
   if (indices.empty())
   {
@@ -101,18 +109,11 @@ void Mesh::draw(const glm::mat4 &projection, const glm::mat4 &view, const glm::m
   this->unbind();
 }
 
-void Mesh::drawWireframe(const glm::mat4 &projection, const glm::mat4 &view, const glm::mat4 &model) const
+void Mesh::drawWireframe(Renderer &renderer, const glm::mat4 modelMatrix) const
 {
   glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-  this->draw(projection, view, model);
+  this->draw(renderer, modelMatrix);
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-}
-
-void Mesh::setTransforms(const glm::mat4 &projection, const glm::mat4 &view, const glm::mat4 &model) const
-{
-  this->material->getShader().setMat4("projection", projection);
-  this->material->getShader().setMat4("view", view);
-  this->material->getShader().setMat4("model", model);
 }
 
 void Mesh::setupMesh()
