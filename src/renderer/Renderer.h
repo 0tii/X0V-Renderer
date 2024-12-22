@@ -8,6 +8,7 @@
 #pragma once
 
 #include <iostream>
+#include <vector>
 
 #include "renderer/camera/Camera.h"
 #include "renderer/shader/Shader.h"
@@ -18,10 +19,23 @@ public:
   Renderer();
   ~Renderer();
 
+  void addCamera(Camera *camera);
+  void removeCamera(Camera *camera);
+
+  // --- debug ---
+  void listCameras() const;
+
   // --- setters ---
-  void setCamera(Camera *camera);
-  void applyCameraTransforms(const Shader &shader) const;
+  void setActiveCamera(Camera *camera);
+  void setActiveCamera(size_t index);
+
+  // --- getters ---
+  Camera *getActiveCamera() const;
+  size_t getCameraCount() const;
+
+  void setCameraUniforms(const Shader &shader) const;
 
 private:
-  Camera *activeCamera;
+  Camera *activeCamera = nullptr;
+  std::vector<Camera *> cameras;
 };

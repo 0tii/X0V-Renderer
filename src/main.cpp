@@ -49,7 +49,7 @@ int main()
 
   // set up camera for renderer
   camera.SetProjectionMatrix(fov, (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-  renderer.setCamera(&camera);
+  renderer.setActiveCamera(&camera);
 
   // create our shader
   Shader ourShader("../resources/shaders/shader.vert", "../resources/shaders/shader.frag");
@@ -105,20 +105,7 @@ int main()
         angle *= (float)glfwGetTime();
       model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
 
-      /*
-      ! -----------------------------------------------
-      ^  Notiz an mich selbst
-      - du hast das problem der default materials gelöst indem du die transforms in die draw methode übernommen hast
-      - das material hat nicht gerendert, weil der shader, der mit dem mesh vercouplet ist, die transforms benötigt
-      - wir müssen mal mit o1 villt besprechen, wie dort die beste lösung ist
-      - wichtig ist zu überlegen ob das die beste lösung ist
-      - definitiv refactorn
-      ! -----------------------------------------------
-       */
-
-      // materials[2].bind();
-      // if (i > 5)
-      //   cubeMesh.setMaterial(&materials[i % 3]);
+      cubeMesh.setMaterial(&materials[i % 3]);
 
       cubeMesh.draw(renderer, model);
     }

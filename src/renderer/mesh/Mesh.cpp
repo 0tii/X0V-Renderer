@@ -94,7 +94,7 @@ void Mesh::draw(Renderer &renderer, const glm::mat4 modelMatrix) const
 
   this->bind();
 
-  renderer.applyCameraTransforms(this->material->getShader());
+  renderer.setCameraUniforms(this->material->getShader());
   this->material->getShader().setMat4("model", modelMatrix);
 
   if (indices.empty())
