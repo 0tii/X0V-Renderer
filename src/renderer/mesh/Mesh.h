@@ -7,7 +7,6 @@
 #include "renderer/material/Material.h"
 #include "renderer/material/DefaultMaterial.hpp"
 #include "renderer/mesh/VertexAttribute.h"
-#include "renderer/Renderer.h"
 
 class Mesh
 {
@@ -24,17 +23,14 @@ public:
   Mesh(Mesh &&other) noexcept;
   Mesh &operator=(Mesh &&other) noexcept;
 
-  void bind() const;
-  void unbind() const;
-  void draw(Renderer &renderer, const glm::mat4 modelMatrix) const;
-  void drawWireframe(Renderer &renderer, const glm::mat4 modelMatrix) const;
+  void bindBuffers() const;
+  void unbindBuffers() const;
+  void draw() const;
 
-  // setters
-  void setMaterial(Material *material);
+  int getVertexCount() const;
+  int getIndexCount() const;
 
 private:
-  Material *material;
-
   std::vector<float> vertices;
   std::vector<int> indices;
   std::vector<VertexAttribute> vertexAttributes;

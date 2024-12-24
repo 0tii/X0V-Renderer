@@ -65,11 +65,9 @@ void Mesh::free()
   }
 }
 
-void Mesh::bind() const
+void Mesh::bindBuffers() const
 {
   glBindVertexArray(VAO);
-
-  this->material->bind();
 
   if (!indices.empty())
   {
@@ -77,26 +75,14 @@ void Mesh::bind() const
   }
 }
 
-void Mesh::unbind() const
+void Mesh::unbindBuffers() const
 {
   glBindVertexArray(0);
-  this->material->unbind();
   //? no need to unbind the EBO, as it is unbound when the VAO is unbound
 }
 
-void Mesh::draw(Renderer &renderer, const glm::mat4 modelMatrix) const
+void Mesh::draw() const
 {
-  if (!material)
-  {
-    std::cerr << "No material set for the mesh!" << std::endl;
-    return;
-  }
-
-  this->bind();
-
-  renderer.setCameraUniforms(this->material->getShader());
-  this->material->getShader().setMat4("model", modelMatrix);
-
   if (indices.empty())
   {
     int numVertices = vertices.size() / (vertexAttributes[0].stride / sizeof(float));
@@ -106,14 +92,16 @@ void Mesh::draw(Renderer &renderer, const glm::mat4 modelMatrix) const
   {
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
   }
-  this->unbind();
 }
 
-void Mesh::drawWireframe(Renderer &renderer, const glm::mat4 modelMatrix) const
+int Mesh::getVertexCount() const
 {
-  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-  this->draw(renderer, modelMatrix);
-  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+  return vertices.size() / (vertexAttributes[0].stride / sizeof(float));
+}
+
+int Mesh::getIndexCount() const
+{
+  return indices.size();
 }
 
 void Mesh::setupMesh()
@@ -122,13 +110,6 @@ void Mesh::setupMesh()
   {
     std::cerr << "Error: No vertex attributes provided for the mesh!" << std::endl;
     return;
-  }
-
-  this->material = &DefaultMaterial::getDefaultMaterial();
-
-  if (!this->material)
-  {
-    std::cerr << "Default material was not initialized correctly!\n";
   }
 
   glGenVertexArrays(1, &this->VAO);
@@ -151,9 +132,4 @@ void Mesh::setupMesh()
     glVertexAttribPointer(vA.layoutIndex, vA.size, vA.type, vA.normalized, vA.stride, vA.offset);
     glEnableVertexAttribArray(vA.layoutIndex);
   }
-}
-
-void Mesh::setMaterial(Material *material)
-{
-  this->material = material;
 }

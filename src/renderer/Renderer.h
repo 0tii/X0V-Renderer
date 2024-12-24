@@ -12,6 +12,7 @@
 
 #include "renderer/camera/Camera.h"
 #include "renderer/shader/Shader.h"
+#include "renderer/render_entity/RenderEntity.h"
 
 class Renderer
 {
@@ -21,6 +22,8 @@ public:
 
   void addCamera(Camera *camera);
   void removeCamera(Camera *camera);
+
+  void renderEntity(RenderEntity &entity) const;
 
   // --- debug ---
   void listCameras() const;

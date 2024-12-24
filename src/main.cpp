@@ -14,6 +14,7 @@
 #include "renderer/material/Material.h"
 #include "renderer/material/DefaultMaterial.hpp"
 #include "renderer/Renderer.h"
+#include "renderer/render_entity/RenderEntity.h"
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -39,7 +40,7 @@ float fov = 45.0f;
 int main()
 {
   GLWindow window = GLWindow();
-  window.create("LearnOpenGL", SCR_WIDTH, SCR_HEIGHT);
+  window.create("Voxel Schmoxel", SCR_WIDTH, SCR_HEIGHT);
   window.setViewPort(SCR_WIDTH, SCR_HEIGHT);
   window.setMouseAccelleration(false);
 
@@ -64,22 +65,31 @@ int main()
       Material(ourShader, sandTexture),
       Material(ourShader, dirtTexture)};
 
-  // create material
-
   auto cubeMeshPtr = buildMesh();
   Mesh &cubeMesh = *cubeMeshPtr;
 
+  RenderEntity cubeEntities[] = {
+      RenderEntity(&cubeMesh, &materials[0]),
+      RenderEntity(&cubeMesh, &materials[1]),
+      RenderEntity(&cubeMesh, &materials[2])};
+
   glm::vec3 cubePositions[] = {
-      glm::vec3(0.0f, 0.0f, 0.0f),
-      glm::vec3(2.0f, 5.0f, -15.0f),
-      glm::vec3(-1.5f, -2.2f, -2.5f),
-      glm::vec3(-3.8f, -2.0f, -12.3f),
-      glm::vec3(2.4f, -0.4f, -3.5f),
-      glm::vec3(-1.7f, 3.0f, -7.5f),
-      glm::vec3(1.3f, -2.0f, -2.5f),
-      glm::vec3(1.5f, 2.0f, -2.5f),
-      glm::vec3(1.5f, 0.2f, -1.5f),
-      glm::vec3(-1.3f, 1.0f, -1.5f)};
+      glm::vec3(-1.0f, -5.0f, -1.0f),
+      glm::vec3(0.0f, -5.0f, -1.0f),
+      glm::vec3(1.0f, -5.0f, -1.0f),
+      glm::vec3(2.0f, -5.0f, -1.0f),
+      glm::vec3(-1.0f, -5.0f, 0.0f),
+      glm::vec3(0.0f, -5.0f, 0.0f),
+      glm::vec3(1.0f, -5.0f, 0.0f),
+      glm::vec3(2.0f, -5.0f, 0.0f),
+      glm::vec3(-1.0f, -5.0f, 1.0f),
+      glm::vec3(0.0f, -5.0f, 1.0f),
+      glm::vec3(1.0f, -5.0f, 1.0f),
+      glm::vec3(2.0f, -5.0f, 1.0f),
+      glm::vec3(-1.0f, -5.0f, 2.0f),
+      glm::vec3(0.0f, -5.0f, 2.0f),
+      glm::vec3(1.0f, -5.0f, 2.0f),
+      glm::vec3(2.0f, -5.0f, 2.0f)};
 
   while (!window.shouldClose())
   {
@@ -96,18 +106,11 @@ int main()
     glClearColor(.06f, .75f, .95f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    for (unsigned int i = 0; i < 10; i++)
+    for (unsigned int i = 0; i < (sizeof(cubePositions) / sizeof(cubePositions[0])); i++)
     {
-      glm::mat4 model = glm::mat4(1.0f);
-      model = glm::translate(model, cubePositions[i]);
-      float angle = 25.0f * (i + 1);
-      if (i % 3 == 0)
-        angle *= (float)glfwGetTime();
-      model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+      cubeEntities[i % 3].getTransform().setPosition(cubePositions[i]);
 
-      cubeMesh.setMaterial(&materials[i % 3]);
-
-      cubeMesh.draw(renderer, model);
+      renderer.renderEntity(cubeEntities[i % 3]);
     }
 
     window.swapBuffers();

@@ -35,6 +35,29 @@ void Renderer::removeCamera(Camera *camera)
   cameras.erase(std::remove(cameras.begin(), cameras.end(), camera), cameras.end());
 }
 
+void Renderer::renderEntity(RenderEntity &entity) const
+{
+  if (!activeCamera)
+  {
+    std::cerr << "No active camera set!" << std::endl;
+  }
+
+  Shader shader = entity.getMaterial()->getShader();
+  shader.use();
+
+  setCameraUniforms(shader);
+
+  shader.setMat4("model", entity.getTransform().getModelMatrix());
+
+  entity.getMaterial()->bind();
+  entity.getMesh()->bindBuffers();
+
+  entity.getMesh()->draw();
+
+  entity.getMesh()->unbindBuffers();
+  entity.getMaterial()->unbind();
+}
+
 void Renderer::setActiveCamera(Camera *camera)
 {
   this->activeCamera = camera;
