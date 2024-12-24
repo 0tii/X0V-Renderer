@@ -25,7 +25,7 @@ public:
 
 private:
   Shader &shader;
-  float shininess = 32.0f;
+  float shininess = 5.0f;
   Texture &diffuseTexture;
   Texture *specularTexture;
   // some day normal maps...
