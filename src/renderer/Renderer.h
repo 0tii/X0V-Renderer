@@ -9,6 +9,8 @@
 
 #include <iostream>
 #include <vector>
+#include <glad/glad.h>
+#include <glm/glm.hpp>
 
 #include "renderer/camera/Camera.h"
 #include "renderer/shader/Shader.h"
@@ -19,6 +21,8 @@ class Renderer
 public:
   Renderer();
   ~Renderer();
+
+  void initFrame() const;
 
   void addCamera(Camera *camera);
   void removeCamera(Camera *camera);

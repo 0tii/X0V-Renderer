@@ -95,16 +95,7 @@ int main()
   {
     processInput(window.getWindow());
 
-    glEnable(GL_BLEND); // enable blending function to allow for transparency
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    // enables depth testing, openGL will keep a depth buffer (z-buffer) to keep track of what to render on top of what
-    // it allows rendering one thing in front of another and hiding the back object
-    glEnable(GL_DEPTH_TEST);
-
-    // rendering logic...
-    glClearColor(.06f, .75f, .95f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    renderer.initFrame();
 
     for (unsigned int i = 0; i < (sizeof(cubePositions) / sizeof(cubePositions[0])); i++)
     {
