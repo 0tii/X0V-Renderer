@@ -15,6 +15,7 @@
 #include "renderer/material/DefaultMaterial.hpp"
 #include "renderer/Renderer.h"
 #include "renderer/render_entity/RenderEntity.h"
+#include "renderer/texture/TextureAtlas.h"
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -52,13 +53,23 @@ int main()
   camera.SetProjectionMatrix(fov, (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
   renderer.setActiveCamera(&camera);
 
+  TextureAtlas textureAtlas = TextureAtlas(
+      {
+          "../assets/textures/mc_diamond_ore_texture.png",
+          "../assets/textures/mc_sand_texture.png",
+          "../assets/textures/mc_dirt_texture.png",
+          "../assets/textures/mc_grass_block_top_texture.png",
+          "../assets/textures/mc_grass_block_side_texture.png",
+      },
+      16);
+
   // create our shader
-  Shader ourShader("../resources/shaders/shader.vert", "../resources/shaders/shader.frag");
+  Shader ourShader("../assets/shaders/shader.vert", "../assets/shaders/shader.frag");
 
   // create textures
-  Texture diamondOreTexture = Texture("../resources/textures/mc_diamond_ore_texture.png", GL_RGBA);
-  Texture sandTexture = Texture("../resources/textures/mc_sand_texture.png", GL_RGBA);
-  Texture dirtTexture = Texture("../resources/textures/mc_dirt_texture.png", GL_RGBA);
+  Texture diamondOreTexture = Texture("../assets/textures/mc_diamond_ore_texture.png", GL_RGBA);
+  Texture sandTexture = Texture("../assets/textures/mc_sand_texture.png", GL_RGBA);
+  Texture dirtTexture = Texture("../assets/textures/mc_dirt_texture.png", GL_RGBA);
 
   Material materials[] = {
       Material(ourShader, diamondOreTexture),
