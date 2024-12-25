@@ -22,7 +22,7 @@ public:
   Renderer();
   ~Renderer();
 
-  void initFrame() const;
+  void initFrame(glm::vec3 color = {{(.03f)}, {(.7f)}, {(.91f)}} /*light blue*/) const;
 
   void addCamera(Camera *camera);
   void removeCamera(Camera *camera);
