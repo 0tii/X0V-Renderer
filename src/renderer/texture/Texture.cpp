@@ -33,7 +33,7 @@ Texture::Texture(const char *imagePath, GLenum colorProfile, bool flipped)
 }
 
 /// @brief This constructor takes an already prepared texture.
-/// It does NOT send texture data to the GPU!
+/// It does NOT send texture data to the GPU! It does, however, set up the default scaling and wrapping settings and generates mipmaps.
 /// @param textureId textureId of a generated and prepared texture. Must have been sent to the GPU!
 Texture::Texture(GLuint textureId)
 {
