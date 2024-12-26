@@ -8,6 +8,7 @@ class Texture
 {
 public:
   Texture(const char *imagePath, GLenum colorProfile, bool flipped = true);
+  Texture(GLuint textureId);
   ~Texture();
 
   void bind(unsigned int textureUnit = 0);
@@ -21,9 +22,5 @@ public:
 
 private:
   unsigned int textureId = 0;
-
-  unsigned char *imageData;
-  int width, height, nrChannels;
-
   GLint maxUnits;
 };
