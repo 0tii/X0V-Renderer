@@ -11,9 +11,9 @@ Libraries used currently:
 - `glm` for vector and matrix calculations
 - `stbi` to handle texture image loading
 
-## Example
+## Current Screenshot
 
-![img](https://i.imgur.com/MnsV0TB.png)
+![img](https://i.imgur.com/SchVz7T.png "Current state")
 
 ## Features
 
@@ -22,7 +22,8 @@ Libraries used currently:
 * [X] Meshes
 * [X] Materials
 * [X] RenderEntities
-* [ ] Proper cube texturing
+* [X] Proper cube texturing
+* [X] BlockRegistry (extend block palette easily)
 * [ ] Face Culling
 * [ ] Frustrum Culling
 * [ ] Lighting
