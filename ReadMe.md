@@ -1,6 +1,6 @@
 # X0V OpenGL Voxel Engine
 
-This repository documents my journey of continuing low-level graphics programming with OpenGL and C++ by creating a voxel engine including all the common functionality.
+This repository documents my journey in low-level graphics programming with OpenGL and C++, focusing on the creation of a general-purpose rendering engine. While the engine is currently applied to render voxels as part of a Minecraft-inspired project, its design and functionality aim to be flexible and extendable for various use cases.
 
 ## Libaries
 

@@ -11,11 +11,11 @@
 #include <stbi/stb_image.h>
 #include <iostream>
 
-TextureAtlas::TextureAtlas(const std::vector<std::string> &texturePaths, int textureSize)
+TextureAtlas::TextureAtlas(const std::unordered_map<std::string, std::string> &texturePaths, int textureSize)
     : texturePaths(texturePaths), textureSize(textureSize), atlasSize(0), atlasTextureID(0)
 {
-  int gridSize = static_cast<int>(std::ceil(std::sqrt(texturePaths.size())));
-  atlasSize = gridSize * textureSize;
+  this->gridSize = static_cast<int>(std::ceil(std::sqrt(texturePaths.size())));
+  this->atlasSize = gridSize * textureSize;
 }
 
 TextureAtlas::~TextureAtlas()
@@ -37,47 +37,71 @@ void TextureAtlas::buildAtlas()
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-  for (int i = 0; i < texturePaths.size(); ++i)
+  int i = 0;
+  for (const auto &[textureName, path] : texturePaths)
   {
     int width, height, channels;
-    unsigned char *imageData = stbi_load(texturePaths[i].c_str(), &width, &height, &channels, 0);
+    unsigned char *imageData = stbi_load(path.c_str(), &width, &height, &channels, 0);
 
     if (!imageData || width != textureSize || height != textureSize)
     {
-      std::cerr << "Error loading texture: " << texturePaths[i] << std::endl;
+      std::cerr << "Error loading texture: " << textureName << std::endl;
       stbi_image_free(imageData);
       continue;
     }
 
-    int gridX = i % (atlasSize / textureSize);
-    int gridY = i / (atlasSize / textureSize);
+    int gridX = i % (atlasSize / textureSize); // calculate the x-position on the atlas grid
+    int gridY = i / (atlasSize / textureSize); // calculate the y position on the atlas grid
 
     int xOffset = gridX * textureSize;
     int yOffset = gridY * textureSize;
 
     glTexSubImage2D(GL_TEXTURE_2D, 0, xOffset, yOffset, textureSize, textureSize, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
+
+    // store uv coordinates
+    float uvWidth = 1.0f / gridSize;
+    float uvHeight = uvWidth;
+
+    this->uvRegions[textureName] = glm::vec4(gridX * uvWidth, gridY * uvHeight, (gridX + 1) * uvWidth, (gridY + 1) * uvHeight);
+
     stbi_image_free(imageData);
+
+    ++i;
   }
 
   glBindTexture(GL_TEXTURE_2D, 0);
+
+  this->isBuilt = true;
 }
 
 unsigned int TextureAtlas::getTextureID() const
 {
+  this->validateAtlas();
   return atlasTextureID;
 }
 
-glm::vec4 TextureAtlas::getUVRegion(int textureIndex) const
+glm::vec4 TextureAtlas::getUVRegion(std::string name) const
 {
-  int gridSize = atlasSize / textureSize;
-  int gridX = textureIndex % gridSize;
-  int gridY = textureIndex / gridSize;
+  if (!this->validateAtlas())
+    return glm::vec4(0.0f);
 
-  float uvWidth = 1.0f / gridSize;
-  float uvHeight = uvWidth;
+  auto pair = this->uvRegions.find(name);
 
-  float uMin = gridX * uvWidth;
-  float vMin = gridY * uvHeight;
+  if (pair == uvRegions.end())
+  {
+    std::cerr << "Unable to find key " << name << " in the texture atlas UV regions" << std::endl;
+    return glm::vec4(0.0f);
+  }
 
-  return glm::vec4(uMin, vMin, uvWidth, uvHeight);
+  return pair->second;
+}
+
+bool TextureAtlas::validateAtlas() const
+{
+  if (!isBuilt)
+  {
+    std::cerr << "[Error] Texture Atlas has not been built yet!" << std::endl;
+    return false;
+  }
+  return true;
 }

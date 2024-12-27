@@ -24,6 +24,7 @@ public:
 
   Transform &getTransform();
   const Transform &getTransform() const; // read only access
+
   Mesh *getMesh();
   Material *getMaterial();
 

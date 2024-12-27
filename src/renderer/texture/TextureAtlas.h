@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <unordered_map>
 #include <vector>
 #include <string>
 #include <glm/glm.hpp>
@@ -14,15 +15,19 @@
 class TextureAtlas
 {
 public:
-  TextureAtlas(const std::vector<std::string> &texturePaths, int textureSize);
+  TextureAtlas(const std::unordered_map<std::string, std::string> &texturePaths, int textureSize);
   ~TextureAtlas();
 
   void buildAtlas();
   unsigned int getTextureID() const;
-  glm::vec4 getUVRegion(int textureIndex) const;
+  glm::vec4 getUVRegion(std::string name) const;
 
 private:
-  std::vector<std::string> texturePaths;
-  int textureSize, atlasSize;
+  std::unordered_map<std::string, std::string> texturePaths;
+  std::unordered_map<std::string, glm::vec4> uvRegions;
+  int textureSize, atlasSize, gridSize;
   unsigned int atlasTextureID;
+  bool isBuilt = false;
+
+  bool validateAtlas() const;
 };

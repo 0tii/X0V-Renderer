@@ -16,6 +16,8 @@
 #include "renderer/Renderer.h"
 #include "renderer/render_entity/RenderEntity.h"
 #include "renderer/texture/TextureAtlas.h"
+#include "renderer/block/BlockType.h"
+#include "renderer/block/BlockMeshGenerator.h"
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -53,23 +55,26 @@ int main()
   camera.SetProjectionMatrix(fov, (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
   renderer.setActiveCamera(&camera);
 
+  BlockMeshGenerator blockMeshGenerator = BlockMeshGenerator();
+
   TextureAtlas textureAtlas = TextureAtlas(
       {
-          "../assets/textures/mc_diamond_ore_texture.png",
-          "../assets/textures/mc_sand_texture.png",
-          "../assets/textures/mc_dirt_texture.png",
-          "../assets/textures/mc_grass_block_top_texture.png",
-          "../assets/textures/mc_grass_block_side_texture.png",
+          {"block_diamond_ore", "../assets/textures/block_diamond_ore.png"},
+          {"block_sand", "../assets/textures/block_sand.png"},
+          {"block_dirt", "../assets/textures/block_dirt.png"},
+          {"block_grass_top", "../assets/textures/block_grass_top.png"},
+          {"block_grass_side", "../assets/textures/block_grass_side.png"},
       },
       16);
+  textureAtlas.buildAtlas();
 
   // create our shader
   Shader ourShader("../assets/shaders/shader.vert", "../assets/shaders/shader.frag");
 
   // create textures
-  Texture diamondOreTexture = Texture("../assets/textures/mc_diamond_ore_texture.png", GL_RGBA);
-  Texture sandTexture = Texture("../assets/textures/mc_sand_texture.png", GL_RGBA);
-  Texture dirtTexture = Texture("../assets/textures/mc_dirt_texture.png", GL_RGBA);
+  Texture diamondOreTexture = Texture("../assets/textures/block_diamond_ore.png", GL_RGBA);
+  Texture sandTexture = Texture("../assets/textures/block_sand.png", GL_RGBA);
+  Texture dirtTexture = Texture("../assets/textures/block_dirt.png", GL_RGBA);
 
   Material materials[] = {
       Material(ourShader, diamondOreTexture),
@@ -79,10 +84,18 @@ int main()
   auto cubeMeshPtr = buildMesh();
   Mesh &cubeMesh = *cubeMeshPtr;
 
+  // create the grass block
+  Texture cubeTexture(textureAtlas.getTextureID());
+  Material cubeMaterial(ourShader, cubeTexture);
+  BlockType grassBlockType("block_grass_top", "block_dirt", "block_grass_side");
+  std::unique_ptr<Mesh> grassBlockMeshPtr = blockMeshGenerator.generateBlockMesh(grassBlockType, textureAtlas);
+  RenderEntity grassBlock(grassBlockMeshPtr.get(), &cubeMaterial);
+
   RenderEntity cubeEntities[] = {
       RenderEntity(&cubeMesh, &materials[0]),
       RenderEntity(&cubeMesh, &materials[1]),
-      RenderEntity(&cubeMesh, &materials[2])};
+      RenderEntity(&cubeMesh, &materials[2]),
+      grassBlock};
 
   glm::vec3 cubePositions[] = {
       glm::vec3(-1.0f, -5.0f, -1.0f),
@@ -110,9 +123,9 @@ int main()
 
     for (unsigned int i = 0; i < (sizeof(cubePositions) / sizeof(cubePositions[0])); i++)
     {
-      cubeEntities[i % 3].getTransform().setPosition(cubePositions[i]);
+      cubeEntities[i % 4].getTransform().setPosition(cubePositions[i]);
 
-      renderer.renderEntity(cubeEntities[i % 3]);
+      renderer.renderEntity(cubeEntities[i % 4]);
     }
 
     window.swapBuffers();
