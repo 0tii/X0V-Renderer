@@ -74,18 +74,12 @@ int main()
   // init blockregistry
   BlockRegistry blockRegistry(textureAtlas, ourShader);
 
-  RenderEntity &dirtBlock = blockRegistry.getBlockRenderEntity("x0v_block_dirt");
-  RenderEntity &diamondOreBlock = blockRegistry.getBlockRenderEntity("x0v_block_diamond_ore");
-  RenderEntity &sandBlock = blockRegistry.getBlockRenderEntity("x0v_block_sand");
-  RenderEntity &grassBlock = blockRegistry.getBlockRenderEntity("x0v_block_grass");
-  RenderEntity &stoneBlock = blockRegistry.getBlockRenderEntity("x0v_block_stone");
-
   RenderEntity *cubeEntities[] = {
-      &dirtBlock,
-      &diamondOreBlock,
-      &sandBlock,
-      &grassBlock,
-      &stoneBlock,
+      &blockRegistry.getBlockRenderEntity("x0v_block_dirt"),
+      &blockRegistry.getBlockRenderEntity("x0v_block_diamond_ore"),
+      &blockRegistry.getBlockRenderEntity("x0v_block_sand"),
+      &blockRegistry.getBlockRenderEntity("x0v_block_grass"),
+      &blockRegistry.getBlockRenderEntity("x0v_block_stone"),
   };
 
   glm::vec3 cubePositions[] = {
