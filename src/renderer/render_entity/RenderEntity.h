@@ -14,16 +14,17 @@
 class RenderEntity
 {
 public:
-  RenderEntity(Mesh *mesh, Material *mat);
+  RenderEntity(uMeshPtr mesh, uMaterialPtr mat);
   ~RenderEntity();
 
-  void setMesh(Mesh *mesh);
-  void setMaterial(Material *material);
+  void setMesh(uMeshPtr mesh);
+  void setMaterial(uMaterialPtr material);
 
   size_t getId() const;
 
   Transform &getTransform();
   const Transform &getTransform() const; // read only access
+
   Mesh *getMesh();
   Material *getMaterial();
 
@@ -34,6 +35,9 @@ private:
 
   Transform transform;
 
-  Mesh *mesh;
-  Material *material;
+  uMeshPtr mesh;
+  uMaterialPtr material;
 };
+
+using uRenderEntityPtr = std::unique_ptr<RenderEntity>;
+using sRenderEntityPtr = std::shared_ptr<RenderEntity>;

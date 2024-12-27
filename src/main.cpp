@@ -15,6 +15,10 @@
 #include "renderer/material/DefaultMaterial.hpp"
 #include "renderer/Renderer.h"
 #include "renderer/render_entity/RenderEntity.h"
+#include "renderer/texture/TextureAtlas.h"
+#include "renderer/block/BlockType.h"
+#include "renderer/block/BlockMeshGenerator.h"
+#include "renderer/block/BlockRegistry.h"
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -52,26 +56,31 @@ int main()
   camera.SetProjectionMatrix(fov, (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
   renderer.setActiveCamera(&camera);
 
+  TextureAtlas textureAtlas = TextureAtlas(
+      {
+          {"block_diamond_ore", "../assets/textures/block_diamond_ore.png"},
+          {"block_sand", "../assets/textures/block_sand.png"},
+          {"block_dirt", "../assets/textures/block_dirt.png"},
+          {"block_grass_top", "../assets/textures/block_grass_top.png"},
+          {"block_grass_side", "../assets/textures/block_grass_side.png"},
+          {"block_stone", "../assets/textures/block_stone.png"},
+      },
+      16);
+  textureAtlas.buildAtlas();
+
   // create our shader
-  Shader ourShader("../resources/shaders/shader.vert", "../resources/shaders/shader.frag");
+  Shader ourShader("../assets/shaders/shader.vert", "../assets/shaders/shader.frag");
 
-  // create textures
-  Texture diamondOreTexture = Texture("../resources/textures/mc_diamond_ore_texture.png", GL_RGBA);
-  Texture sandTexture = Texture("../resources/textures/mc_sand_texture.png", GL_RGBA);
-  Texture dirtTexture = Texture("../resources/textures/mc_dirt_texture.png", GL_RGBA);
+  // init blockregistry
+  BlockRegistry blockRegistry(textureAtlas, ourShader);
 
-  Material materials[] = {
-      Material(ourShader, diamondOreTexture),
-      Material(ourShader, sandTexture),
-      Material(ourShader, dirtTexture)};
-
-  auto cubeMeshPtr = buildMesh();
-  Mesh &cubeMesh = *cubeMeshPtr;
-
-  RenderEntity cubeEntities[] = {
-      RenderEntity(&cubeMesh, &materials[0]),
-      RenderEntity(&cubeMesh, &materials[1]),
-      RenderEntity(&cubeMesh, &materials[2])};
+  RenderEntity *cubeEntities[] = {
+      &blockRegistry.getBlockRenderEntity("x0v_block_dirt"),
+      &blockRegistry.getBlockRenderEntity("x0v_block_diamond_ore"),
+      &blockRegistry.getBlockRenderEntity("x0v_block_sand"),
+      &blockRegistry.getBlockRenderEntity("x0v_block_grass"),
+      &blockRegistry.getBlockRenderEntity("x0v_block_stone"),
+  };
 
   glm::vec3 cubePositions[] = {
       glm::vec3(-1.0f, -5.0f, -1.0f),
@@ -99,9 +108,9 @@ int main()
 
     for (unsigned int i = 0; i < (sizeof(cubePositions) / sizeof(cubePositions[0])); i++)
     {
-      cubeEntities[i % 3].getTransform().setPosition(cubePositions[i]);
+      cubeEntities[i % 5]->getTransform().setPosition(cubePositions[i]);
 
-      renderer.renderEntity(cubeEntities[i % 3]);
+      renderer.renderEntity(cubeEntities[i % 5]);
     }
 
     window.swapBuffers();

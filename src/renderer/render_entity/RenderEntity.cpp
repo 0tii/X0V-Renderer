@@ -9,8 +9,8 @@
 
 size_t RenderEntity::nextId = 0;
 
-RenderEntity::RenderEntity(Mesh *mesh, Material *mat)
-    : transform(), mesh(mesh), material(mat), id(nextId++)
+RenderEntity::RenderEntity(uMeshPtr mesh, uMaterialPtr mat)
+    : transform(), mesh(std::move(mesh)), material(std::move(mat)), id(nextId++)
 {
 }
 
@@ -18,14 +18,14 @@ RenderEntity::~RenderEntity()
 {
 }
 
-void RenderEntity::setMesh(Mesh *mesh)
+void RenderEntity::setMesh(uMeshPtr mesh)
 {
-  this->mesh = mesh;
+  this->mesh = std::move(mesh);
 }
 
-void RenderEntity::setMaterial(Material *material)
+void RenderEntity::setMaterial(uMaterialPtr material)
 {
-  this->material = material;
+  this->material = std::move(material);
 }
 
 Transform &RenderEntity::getTransform()
@@ -40,12 +40,12 @@ const Transform &RenderEntity::getTransform() const
 
 Mesh *RenderEntity::getMesh()
 {
-  return mesh;
+  return mesh.get();
 }
 
 Material *RenderEntity::getMaterial()
 {
-  return material;
+  return material.get();
 }
 
 size_t RenderEntity::getId() const
