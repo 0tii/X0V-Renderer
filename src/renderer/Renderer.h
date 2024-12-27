@@ -37,6 +37,8 @@ public:
   void setActiveCamera(Camera *camera);
   void setActiveCamera(size_t index);
 
+  void setWireframeRendering(bool enabled = true);
+
   // --- getters ---
   Camera *getActiveCamera() const;
   size_t getCameraCount() const;

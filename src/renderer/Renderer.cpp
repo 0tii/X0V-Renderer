@@ -93,6 +93,18 @@ void Renderer::setActiveCamera(size_t index)
   }
 }
 
+void Renderer::setWireframeRendering(bool enabled)
+{
+  if (enabled)
+  {
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+  }
+  else
+  {
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+  }
+}
+
 Camera *Renderer::getActiveCamera() const
 {
   return activeCamera;

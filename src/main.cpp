@@ -85,6 +85,9 @@ int main()
 
     for (unsigned int i = 0; i < (sizeof(cubePositions) / sizeof(cubePositions[0])); i++)
     {
+      // enable wireframe for every 2nd block
+      // renderer.setWireframeRendering(i % 2);
+
       cubeEntities[i % 5]->getTransform().setPosition(cubePositions[i]);
 
       renderer.renderEntity(cubeEntities[i % 5]);
