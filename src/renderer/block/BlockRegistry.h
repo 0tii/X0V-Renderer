@@ -23,8 +23,14 @@
 class BlockRegistry
 {
 public:
-  BlockRegistry(TextureAtlas &atlas, Shader &shader);
-  ~BlockRegistry() = default;
+  static BlockRegistry &getInstance()
+  {
+    static BlockRegistry instance;
+    return instance;
+  }
+
+  BlockRegistry(const BlockRegistry &) = delete;
+  BlockRegistry &operator=(const BlockRegistry &) = delete;
 
   void registerBlock(const std::string &blockId, const BlockType &blockType);
 
@@ -34,11 +40,13 @@ public:
   bool hasBlock(const std::string &blockId) const;
 
 private:
+  BlockRegistry();
+  ~BlockRegistry() = default;
+
   std::unordered_map<std::string, std::unique_ptr<RenderEntity>> blocks;
 
-  TextureAtlas &textureAtlas;
-  Shader &shader;
-
+  Shader shader;
+  TextureAtlas textureAtlas;
   Texture atlasTexture;
   BlockMeshGenerator meshGenerator;
 };

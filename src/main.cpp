@@ -11,7 +11,6 @@
 #include "renderer/window/window.h"
 #include "renderer/Renderer.h"
 #include "renderer/render_entity/RenderEntity.h"
-#include "renderer/texture/TextureAtlas.h"
 #include "renderer/block/BlockRegistry.h"
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
@@ -49,23 +48,8 @@ int main()
   camera.SetProjectionMatrix(fov, (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
   renderer.setActiveCamera(&camera);
 
-  TextureAtlas textureAtlas = TextureAtlas(
-      {
-          {"block_diamond_ore", "../assets/textures/block_diamond_ore.png"},
-          {"block_sand", "../assets/textures/block_sand.png"},
-          {"block_dirt", "../assets/textures/block_dirt.png"},
-          {"block_grass_top", "../assets/textures/block_grass_top.png"},
-          {"block_grass_side", "../assets/textures/block_grass_side.png"},
-          {"block_stone", "../assets/textures/block_stone.png"},
-      },
-      16);
-  textureAtlas.buildAtlas();
-
-  // create our shader
-  Shader ourShader("../assets/shaders/shader.vert", "../assets/shaders/shader.frag");
-
   // init blockregistry
-  BlockRegistry blockRegistry(textureAtlas, ourShader);
+  BlockRegistry &blockRegistry = BlockRegistry::getInstance();
 
   RenderEntity *cubeEntities[] = {
       &blockRegistry.getBlockRenderEntity("x0v_block_dirt"),

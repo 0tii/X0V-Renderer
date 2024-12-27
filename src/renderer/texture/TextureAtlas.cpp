@@ -16,6 +16,7 @@ TextureAtlas::TextureAtlas(const std::unordered_map<std::string, std::string> &t
 {
   this->gridSize = static_cast<int>(std::ceil(std::sqrt(texturePaths.size())));
   this->atlasSize = gridSize * textureSize;
+  this->buildAtlas();
 }
 
 TextureAtlas::~TextureAtlas()

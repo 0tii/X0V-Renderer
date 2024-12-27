@@ -7,8 +7,18 @@
 
 #include "BlockRegistry.h"
 
-BlockRegistry::BlockRegistry(TextureAtlas &atlas, Shader &shader)
-    : textureAtlas(atlas), shader(shader), atlasTexture(atlas.getTextureID()), meshGenerator()
+BlockRegistry::BlockRegistry()
+    : textureAtlas(
+          std::unordered_map<std::string, std::string>{
+              {"block_diamond_ore", "../assets/textures/block_diamond_ore.png"},
+              {"block_sand", "../assets/textures/block_sand.png"},
+              {"block_dirt", "../assets/textures/block_dirt.png"},
+              {"block_grass_top", "../assets/textures/block_grass_top.png"},
+              {"block_grass_side", "../assets/textures/block_grass_side.png"},
+              {"block_stone", "../assets/textures/block_stone.png"}},
+          16),
+      atlasTexture(textureAtlas.getTextureID()), // Properly initialize the texture
+      shader("../assets/shaders/shader.vert", "../assets/shaders/shader.frag")
 {
   registerBlock("x0v_block_grass", BlockType("block_grass_top", "block_dirt", "block_grass_side"));
   registerBlock("x0v_block_dirt", BlockType("block_dirt"));
