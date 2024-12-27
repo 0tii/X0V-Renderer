@@ -30,3 +30,6 @@ private:
   Texture *specularTexture;
   // some day normal maps...
 };
+
+using uMaterialPtr = std::unique_ptr<Material>;
+using sMaterialPtr = std::shared_ptr<Material>;

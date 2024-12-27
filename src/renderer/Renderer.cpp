@@ -71,6 +71,11 @@ void Renderer::renderEntity(RenderEntity &entity) const
   entity.getMaterial()->unbind();
 }
 
+void Renderer::renderEntity(RenderEntity *entity) const
+{
+  this->renderEntity(*entity);
+}
+
 void Renderer::setActiveCamera(Camera *camera)
 {
   this->activeCamera = camera;

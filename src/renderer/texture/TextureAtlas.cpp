@@ -27,6 +27,8 @@ TextureAtlas::~TextureAtlas()
 
 void TextureAtlas::buildAtlas()
 {
+  std::cout << "[TextureAtlas] stitching textures." << std::endl;
+
   glGenTextures(1, &atlasTextureID);
   glBindTexture(GL_TEXTURE_2D, atlasTextureID);
 
@@ -67,6 +69,8 @@ void TextureAtlas::buildAtlas()
     stbi_image_free(imageData);
 
     ++i;
+
+    std::cout << "[TextureAtlas] stitching texture " << i << " of " << texturePaths.size() << " (" << textureName << ")" << std::endl;
   }
 
   glBindTexture(GL_TEXTURE_2D, 0);

@@ -14,8 +14,6 @@
 #include "renderer/block/BlockType.h"
 #include "renderer/texture/TextureAtlas.h"
 
-typedef std::unique_ptr<Mesh> uMeshPtr;
-
 class BlockMeshGenerator
 {
 public:

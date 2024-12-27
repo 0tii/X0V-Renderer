@@ -28,6 +28,7 @@ public:
   void removeCamera(Camera *camera);
 
   void renderEntity(RenderEntity &entity) const;
+  void renderEntity(RenderEntity *entity) const;
 
   // --- debug ---
   void listCameras() const;

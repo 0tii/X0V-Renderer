@@ -39,3 +39,6 @@ private:
   void setupMesh();
   void free();
 };
+
+using uMeshPtr = std::unique_ptr<Mesh>;
+using sMeshPtr = std::shared_ptr<Mesh>;
