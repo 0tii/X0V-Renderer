@@ -7,9 +7,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 const float YAW = -90.0f;
-const float PITCH = 0.0f;
-const float SPEED = 2.5f;
-const float SENSITIVITY = 0.1f;
+const float PITCH = -16.0f;
+const float SPEED = 3.5f;
+const float SENSITIVITY = 0.065f;
 const float ZOOM = 45.0f;
 
 enum class Camera_Movement
@@ -17,7 +17,9 @@ enum class Camera_Movement
   FORWARD,
   BACKWARD,
   LEFT,
-  RIGHT
+  RIGHT,
+  UP,
+  DOWN
 };
 
 class Camera

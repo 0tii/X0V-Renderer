@@ -10,5 +10,6 @@
 enum ShaderType
 {
   Block,
-  LightBlock
+  LightBlock,
+  LightReceiver
 };

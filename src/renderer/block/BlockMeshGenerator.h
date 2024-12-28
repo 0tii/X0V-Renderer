@@ -19,8 +19,14 @@ class BlockMeshGenerator
 public:
   BlockMeshGenerator() = default;
   uMeshPtr generateBlockMesh(const BlockType &type, const TextureAtlas &atlas);
+  uMeshPtr generatePlainBlockMeshWithNormals();
 
 private:
   std::vector<float> generateCubeFace(
-      glm::vec3 bottomLeft, glm::vec3 bottomRight, glm::vec3 topLeft, glm::vec3 topRight, glm::vec4 uvRegion);
+      glm::vec3 bottomLeft,
+      glm::vec3 bottomRight,
+      glm::vec3 topLeft,
+      glm::vec3 topRight,
+      glm::vec4 uvRegion,
+      glm::vec3 normals = glm::vec3(0.0f));
 };

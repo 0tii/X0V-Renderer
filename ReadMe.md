@@ -13,7 +13,7 @@ Libraries used currently:
 
 ## Current Screenshot
 
-![img](https://i.imgur.com/SchVz7T.png "Current state")
+![img](https://i.imgur.com/FaSGmWi.png "Current state")
 
 ## Features
 
@@ -26,8 +26,7 @@ Libraries used currently:
 * [X] BlockRegistry (extend block palette easily)
 * [ ] Face Culling
 * [ ] Frustrum Culling
-* [ ] Lighting
+* [X] Lighting
 * [ ] World Generation
 * [ ] Block placing
 * [ ] Block breaking
-* [ ] Physics

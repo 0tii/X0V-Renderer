@@ -10,6 +10,8 @@
 ShaderProvider::ShaderProvider()
 {
   addShader(ShaderType::Block, "../assets/shaders/block-shader.vert", "../assets/shaders/block-shader.frag");
+  addShader(ShaderType::LightBlock, "../assets/shaders/block-shader.vert", "../assets/shaders/light-source-shader.frag");
+  addShader(ShaderType::LightReceiver, "../assets/shaders/block-shader.vert", "../assets/shaders/light-receiver-shader.frag");
 }
 
 Shader &ShaderProvider::getShader(ShaderType type)
