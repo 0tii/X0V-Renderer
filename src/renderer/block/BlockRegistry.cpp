@@ -17,8 +17,7 @@ BlockRegistry::BlockRegistry()
               {"block_grass_side", "../assets/textures/block_grass_side.png"},
               {"block_stone", "../assets/textures/block_stone.png"}},
           16),
-      atlasTexture(textureAtlas.getTextureID()),
-      shader("../assets/shaders/block-shader.vert", "../assets/shaders/block-shader.frag")
+      atlasTexture(textureAtlas.getTextureID())
 {
   registerBlock("x0v_block_grass", BlockType("block_grass_top", "block_dirt", "block_grass_side"));
   registerBlock("x0v_block_dirt", BlockType("block_dirt"));
