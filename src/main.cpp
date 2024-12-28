@@ -96,7 +96,6 @@ int main()
     }
 
     // set shader uniforms
-    ShaderProvider::getInstance().getShader(ShaderType::Block).use();
     ShaderProvider::getInstance().getShader(ShaderType::Block).setVec3("lightPos", lightPos);
     ShaderProvider::getInstance().getShader(ShaderType::Block).setVec3("viewPos", camera.Position);
 

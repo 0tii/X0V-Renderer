@@ -117,7 +117,7 @@ size_t Renderer::getCameraCount() const
 
 /// @brief Set Camera uniforms on a shader program
 /// @param shader The shader to set the camera transform uniforms on
-void Renderer::setCameraUniforms(const Shader &shader) const
+void Renderer::setCameraUniforms(Shader &shader) const
 {
   if (!activeCamera)
   {
