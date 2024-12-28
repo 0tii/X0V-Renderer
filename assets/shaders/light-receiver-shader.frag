@@ -2,17 +2,17 @@
 
 in vec3 Normal;
 in vec3 FragPos;
+in vec3 LightPos;
 
 out vec4 FragColor;
 
 uniform vec3 objectColor;
 uniform vec3 lightColor;
-uniform vec3 lightPos;
 
 void main()
 {
   vec3 normalVector = normalize(Normal);
-  vec3 lightDirection = normalize(lightPos - FragPos);
+  vec3 lightDirection = normalize(LightPos - FragPos);
 
   float diff = max(dot(normalVector, lightDirection), 0.0);
   vec3 diffuse = diff * lightColor;

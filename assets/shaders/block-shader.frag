@@ -5,6 +5,7 @@ out vec4 FragColor;
 in vec2 TexCoord;
 in vec3 Normal;
 in vec3 FragPos;
+in vec3 LightPos;
 
 struct Material
 {
@@ -15,21 +16,20 @@ struct Material
 
 uniform Material material;
 
-uniform vec3 lightPos;
 uniform vec3 viewPos;
 
 void main()
 {
   // diffuse lighting
   vec3 normalVector = normalize(Normal);
-  vec3 lightDirection = normalize(lightPos - FragPos);
+  vec3 lightDirection = normalize(LightPos - FragPos);
 
   float ambientLightLevel = 0.2;
   float diffuseLightStrength = max(dot(normalVector, lightDirection), 0);
 
   // specular lighting
   float specularIntensity = 0.5;
-  vec3 viewDirection = normalize(viewPos - FragPos);
+  vec3 viewDirection = normalize(-FragPos);
   vec3 reflectDirection = reflect(-lightDirection, normalVector);
   float specularComponent = pow(max(dot(viewDirection, reflectDirection), 0.0), 32);
 
