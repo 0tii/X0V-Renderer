@@ -15,16 +15,17 @@ BlockRegistry::BlockRegistry()
               {"block_dirt", "../assets/textures/block_dirt.png"},
               {"block_grass_top", "../assets/textures/block_grass_top.png"},
               {"block_grass_side", "../assets/textures/block_grass_side.png"},
-              {"block_stone", "../assets/textures/block_stone.png"}},
+              {"block_stone", "../assets/textures/block_stone.png"},
+              {"block_lamp", "../assets/textures/block_lamp_on.png"}},
           16),
-      atlasTexture(textureAtlas.getTextureID()), // Properly initialize the texture
-      shader("../assets/shaders/shader.vert", "../assets/shaders/shader.frag")
+      atlasTexture(textureAtlas.getTextureID())
 {
   registerBlock("x0v_block_grass", BlockType("block_grass_top", "block_dirt", "block_grass_side"));
   registerBlock("x0v_block_dirt", BlockType("block_dirt"));
   registerBlock("x0v_block_diamond_ore", BlockType("block_diamond_ore"));
   registerBlock("x0v_block_sand", BlockType("block_sand"));
   registerBlock("x0v_block_stone", BlockType("block_stone"));
+  registerBlock("x0v_block_lamp", BlockType("block_lamp", ShaderType::LightBlock));
 }
 
 void BlockRegistry::registerBlock(const std::string &blockId, const BlockType &blockType)
@@ -32,7 +33,8 @@ void BlockRegistry::registerBlock(const std::string &blockId, const BlockType &b
   std::cout << "[BlockRegistry] Registering block " << blockId << std::endl;
 
   auto blockMesh = meshGenerator.generateBlockMesh(blockType, textureAtlas);
-  auto blockMaterial = std::make_unique<Material>(shader, atlasTexture);
+  auto &providedShader = ShaderProvider::getInstance().getShader(blockType.shaderType); // yes this little shit here cost me 2 hours
+  auto blockMaterial = std::make_unique<Material>(providedShader, atlasTexture);
   auto entity = std::make_unique<RenderEntity>(std::move(blockMesh), std::move(blockMaterial));
 
   blocks[blockId] = std::move(entity);

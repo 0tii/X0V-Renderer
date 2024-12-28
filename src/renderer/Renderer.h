@@ -43,7 +43,7 @@ public:
   Camera *getActiveCamera() const;
   size_t getCameraCount() const;
 
-  void setCameraUniforms(const Shader &shader) const;
+  void setCameraUniforms(Shader &shader) const;
 
 private:
   Camera *activeCamera = nullptr;

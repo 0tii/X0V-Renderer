@@ -10,17 +10,22 @@
 #include <string>
 #include <iostream>
 
+#include "renderer/shader/ShaderType.h"
+
 struct BlockType
 {
 public:
   BlockType() = default;
-  BlockType(std::string textureName);
-  BlockType(std::string textureY, std::string textureSides);
-  BlockType(std::string textureTop, std::string textureBottom, std::string textureSides);
+  BlockType(std::string textureName, ShaderType shaderType = ShaderType::Block);
+  BlockType(std::string textureY, std::string textureSides, ShaderType shaderType = ShaderType::Block);
+  BlockType(std::string textureTop, std::string textureBottom,
+            std::string textureSides, ShaderType shaderType = ShaderType::Block);
   BlockType(std::string textureTop, std::string textureBottom, std::string textureNorth,
-            std::string textureEast, std::string textureSouth, std::string textureWest);
+            std::string textureEast, std::string textureSouth, std::string textureWest,
+            ShaderType shaderType = ShaderType::Block);
 
   std::string top, bottom, north, east, south, west;
+  ShaderType shaderType;
 
   void validate() const;
 };
