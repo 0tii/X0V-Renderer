@@ -18,6 +18,7 @@
 #include "renderer/texture/Texture.h"
 #include "renderer/texture/TextureAtlas.h"
 #include "renderer/shader/Shader.h"
+#include "renderer/shader/ShaderProvider.h"
 #include "renderer/render_entity/RenderEntity.h"
 
 class BlockRegistry

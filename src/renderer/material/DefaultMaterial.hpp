@@ -13,7 +13,7 @@ public:
   static Material &getDefaultMaterial()
   {
 
-    static Shader shader("../resources/shaders/shader.vert", "../resources/shaders/shader.frag");
+    static Shader shader("../assets/shaders/block-shader.vert", "../assets/shaders/block-shader.frag");
     static Texture texture("../resources/textures/default_texture.png", GL_RGBA);
 
     texture.setWrappingMode(GL_MIRRORED_REPEAT, GL_MIRRORED_REPEAT);

@@ -6,7 +6,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "renderer/shader/Shader.h"
 #include "renderer/camera/Camera.h"
 #include "renderer/window/window.h"
 #include "renderer/Renderer.h"
@@ -86,7 +85,7 @@ int main()
     for (unsigned int i = 0; i < (sizeof(cubePositions) / sizeof(cubePositions[0])); i++)
     {
       // enable wireframe for every 2nd block
-      // renderer.setWireframeRendering(i % 2);
+      renderer.setWireframeRendering((i % 3 == 0));
 
       cubeEntities[i % 5]->getTransform().setPosition(cubePositions[i]);
 
