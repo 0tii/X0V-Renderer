@@ -16,6 +16,7 @@ struct Material
 
 uniform Material material;
 
+uniform vec3 lightColor;
 uniform vec3 viewPos;
 
 void main()
@@ -24,7 +25,7 @@ void main()
   vec3 normalVector = normalize(Normal);
   vec3 lightDirection = normalize(LightPos - FragPos);
 
-  float ambientLightLevel = 0.2;
+  float ambientLightLevel = 0.1;
   float diffuseLightStrength = max(dot(normalVector, lightDirection), 0);
 
   // specular lighting
@@ -40,5 +41,8 @@ void main()
 
   // vec4 specularColor = texture(material.specular, TexCoord);
 
-  FragColor = vec4(diffuseColor.x * totalLightIntensity, diffuseColor.y * totalLightIntensity, diffuseColor.z * totalLightIntensity, 1);
+  vec3 finalLight = lightColor * totalLightIntensity;
+  FragColor = diffuseColor * vec4(finalLight, 1);
+
+  //FragColor = vec4(diffuseColor.x * totalLightIntensity, diffuseColor.y * totalLightIntensity, diffuseColor.z * totalLightIntensity, 1);
 };
