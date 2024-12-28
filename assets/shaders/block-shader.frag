@@ -25,7 +25,7 @@ void main()
   vec3 normalVector = normalize(Normal);
   vec3 lightDirection = normalize(LightPos - FragPos);
 
-  float ambientLightLevel = 0.1;
+  float ambientLightLevel = 0.25;
   float diffuseLightStrength = max(dot(normalVector, lightDirection), 0);
 
   // specular lighting

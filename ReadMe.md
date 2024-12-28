@@ -15,6 +15,10 @@ Libraries used currently:
 
 ![img](https://i.imgur.com/FaSGmWi.png "Current state")
 
+![img](https://i.imgur.com/Kh2lODh.png)
+
+![img](https://i.imgur.com/uxtu0hr.png)
+
 ## Features
 
 * [X] Textures
@@ -26,7 +30,8 @@ Libraries used currently:
 * [X] BlockRegistry (extend block palette easily)
 * [ ] Face Culling
 * [ ] Frustrum Culling
-* [X] Lighting
+* [X] Diffuse / Specular Lighting
+* [X] Colored Light
 * [ ] World Generation
 * [ ] Block placing
 * [ ] Block breaking
