@@ -24,12 +24,14 @@ public:
   void setDiffuseTexture(Texture &texture);
   void setSpecularTexture(Texture *texture);
   void setSpecularTexture(unsigned int textureId);
+  void setEmissiveTexture(unsigned int textureId);
 
 private:
   Shader &shader;
-  float shininess = 128.0f;
+  float shininess = 32.0f;
   Texture &diffuseTexture;
   Texture *specularTexture;
+  Texture *emissiveTexture;
   // some day normal maps...
 };
 

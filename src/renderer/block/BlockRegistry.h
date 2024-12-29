@@ -48,6 +48,7 @@ private:
 
   TextureAtlas textureAtlas;
   TextureAtlas specularAtlas;
+  TextureAtlas emissionAtlas;
   Texture atlasTexture;
   BlockMeshGenerator meshGenerator;
 };

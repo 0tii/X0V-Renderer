@@ -16,7 +16,7 @@ struct BlockType
 {
 public:
   BlockType() = default;
-  BlockType(std::string textureName, ShaderType shaderType = ShaderType::Block);
+  BlockType(std::string textureName, ShaderType shaderType = ShaderType::Block, bool emit = false);
   BlockType(std::string textureY, std::string textureSides, ShaderType shaderType = ShaderType::Block);
   BlockType(std::string textureTop, std::string textureBottom,
             std::string textureSides, ShaderType shaderType = ShaderType::Block);
@@ -26,6 +26,7 @@ public:
 
   std::string top, bottom, north, east, south, west;
   ShaderType shaderType;
+  bool emit = false;
 
   void validate() const;
 };

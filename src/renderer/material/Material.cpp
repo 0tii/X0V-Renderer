@@ -1,7 +1,7 @@
 #include "Material.h"
 
 Material::Material(Shader &fragmentShader, Texture &diffuse, Texture *specular)
-    : shader(fragmentShader), diffuseTexture(diffuse), specularTexture(specular)
+    : shader(fragmentShader), diffuseTexture(diffuse), specularTexture(specular ? specular : nullptr), emissiveTexture(nullptr)
 {
 }
 
@@ -11,6 +11,11 @@ Material::~Material()
   {
     std::cout << "[Material] Destructor invoked, deleting specular texture" << std::endl;
     delete specularTexture;
+  }
+  if (emissiveTexture)
+  {
+    std::cout << "[Material] Destructor invoked, deleting emissive texture" << std::endl;
+    delete emissiveTexture;
   }
 }
 
@@ -29,6 +34,12 @@ void Material::bind() const
     shader.setInt("material.specular", 1);
   }
 
+  if (emissiveTexture)
+  {
+    emissiveTexture->bind(2);
+    shader.setInt("material.emissive", 2);
+  }
+
   shader.setFloat("material.shininess", shininess);
 }
 
@@ -38,6 +49,10 @@ void Material::unbind() const
   if (specularTexture)
   {
     specularTexture->unbind();
+  }
+  if (emissiveTexture)
+  {
+    emissiveTexture->unbind();
   }
 }
 
@@ -77,4 +92,13 @@ void Material::setSpecularTexture(unsigned int texture)
     delete specularTexture;
   }
   this->specularTexture = new Texture(texture);
+}
+
+void Material::setEmissiveTexture(unsigned int textureId)
+{
+  if (emissiveTexture)
+  {
+    delete emissiveTexture;
+  }
+  this->emissiveTexture = new Texture(textureId);
 }

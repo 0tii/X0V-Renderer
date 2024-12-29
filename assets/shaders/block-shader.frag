@@ -11,6 +11,7 @@ struct Material
 {
   sampler2D diffuse;
   sampler2D specular;
+  sampler2D emissive;
   float shininess;
 };
 
@@ -30,9 +31,8 @@ void main()
 {
   // pixel color taken from texture at fragment coord
   vec4 diffuseColor = texture(material.diffuse, TexCoord); 
-  
-  vec4 specularColor = texture(material.specular, TexCoord);
-  //vec4 specularColor = vec4(1); // !! <-- will be passed as texture(material.specular, TexCoord); from texture
+  vec4 specularColor = texture(material.specular, TexCoord) + vec4(0.15); // small bump because maps are too dark
+  vec4 emissiveColor = texture(material.emissive, TexCoord);
 
   vec4 ambient = vec4(light.ambient, 1) * diffuseColor;
 
@@ -48,6 +48,6 @@ void main()
   float spec = pow(max(dot(viewDirection, reflectDirection), 0.0), max(material.shininess, 0.01));
   vec4 specular = vec4(light.specular, 1) * (spec * specularColor);
 
-  vec4 finalLight = ambient + diffuse + specular;
+  vec4 finalLight = ambient + diffuse + specular + emissiveColor;
   FragColor = finalLight; // * diffuseColor was removed for now
 }

@@ -21,6 +21,19 @@ BlockRegistry::BlockRegistry()
               {"block_oak_log_top", "../assets/textures/block_oak_log_top.png"},
           },
           16),
+      emissionAtlas(
+          std::unordered_map<std::string, std::string>{
+              {"block_diamond_ore", "../assets/textures/emit_block_diamond_ore.png"},
+              {"block_sand", "../assets/textures/spec_block_sand.png"},
+              {"block_dirt", "../assets/textures/spec_block_dirt.png"},
+              {"block_grass_top", "../assets/textures/spec_block_grass_top.png"},
+              {"block_grass_side", "../assets/textures/spec_block_grass_side.png"},
+              {"block_stone", "../assets/textures/spec_block_stone.png"},
+              {"block_lamp", "../assets/textures/spec_block_lamp_on.png"},
+              {"block_oak_log_side", "../assets/textures/spec_block_oak_log.png"},
+              {"block_oak_log_top", "../assets/textures/spec_block_oak_log_top.png"},
+          },
+          16),
       specularAtlas(
           std::unordered_map<std::string, std::string>{
               {"block_diamond_ore", "../assets/textures/spec_block_diamond_ore.png"},
@@ -39,7 +52,7 @@ BlockRegistry::BlockRegistry()
   registerBlock("x0v_block_grass", BlockType("block_grass_top", "block_dirt", "block_grass_side"));
   registerBlock("x0v_block_oak_log", BlockType("block_oak_log_top", "block_oak_log_side"));
   registerBlock("x0v_block_dirt", BlockType("block_dirt"));
-  registerBlock("x0v_block_diamond_ore", BlockType("block_diamond_ore"));
+  registerBlock("x0v_block_diamond_ore", BlockType("block_diamond_ore", ShaderType::Block, true));
   registerBlock("x0v_block_sand", BlockType("block_sand"));
   registerBlock("x0v_block_stone", BlockType("block_stone"));
   registerBlock("x0v_block_lamp", BlockType("block_lamp", ShaderType::LightBlock));
@@ -53,6 +66,11 @@ void BlockRegistry::registerBlock(const std::string &blockId, const BlockType &b
   auto &providedShader = ShaderProvider::getInstance().getShader(blockType.shaderType); // yes this little shit '&' here cost me 2 hours
   auto blockMaterial = std::make_unique<Material>(providedShader, atlasTexture);
   blockMaterial->setSpecularTexture(specularAtlas.getTextureID());
+  if (blockType.emit)
+  {
+    auto emissiveId = emissionAtlas.getTextureID(); // Validate this
+    blockMaterial->setEmissiveTexture(emissiveId);
+  }
   auto entity = std::make_unique<RenderEntity>(std::move(blockMesh), std::move(blockMaterial));
 
   blocks[blockId] = std::move(entity);

@@ -7,8 +7,8 @@
 
 #include "BlockType.h"
 
-BlockType::BlockType(std::string textureName, ShaderType shaderType)
-    : top(textureName), bottom(textureName), north(textureName), east(textureName), south(textureName), west(textureName), shaderType(shaderType) {}
+BlockType::BlockType(std::string textureName, ShaderType shaderType, bool emit)
+    : top(textureName), bottom(textureName), north(textureName), east(textureName), south(textureName), west(textureName), shaderType(shaderType), emit(emit) {}
 
 BlockType::BlockType(std::string textureY, std::string textureSides, ShaderType shaderType)
     : top(textureY), bottom(textureY), north(textureSides), east(textureSides), south(textureSides), west(textureSides), shaderType(shaderType) {}
