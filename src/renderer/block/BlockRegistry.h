@@ -47,6 +47,7 @@ private:
   std::unordered_map<std::string, std::unique_ptr<RenderEntity>> blocks;
 
   TextureAtlas textureAtlas;
+  TextureAtlas specularAtlas;
   Texture atlasTexture;
   BlockMeshGenerator meshGenerator;
 };

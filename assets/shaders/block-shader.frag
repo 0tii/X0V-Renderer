@@ -9,7 +9,6 @@ in vec3 LightPos;
 
 struct Material
 {
-  vec4 ambient;
   sampler2D diffuse;
   sampler2D specular;
   float shininess;
@@ -32,16 +31,16 @@ void main()
   // pixel color taken from texture at fragment coord
   vec4 diffuseColor = texture(material.diffuse, TexCoord); 
   
-  // -- vec4 specularColor = texture(material.specular, TexCoord);
-  vec4 specularColor = vec4(1); // !! <-- will be passed as texture(material.specular, TexCoord); from texture
+  vec4 specularColor = texture(material.specular, TexCoord);
+  //vec4 specularColor = vec4(1); // !! <-- will be passed as texture(material.specular, TexCoord); from texture
 
-  vec4 ambient = vec4(light.ambient, 1) * (material.ambient);
+  vec4 ambient = vec4(light.ambient, 1) * diffuseColor;
 
   // diffuse lighting
   vec3 normalVector = normalize(Normal);
   vec3 lightDirection = normalize(LightPos - FragPos);
   float diffuseLightStrength = max(dot(normalVector, lightDirection), 0);
-  vec4 diffuse = vec4(light.diffuse, 1) * (diffuseLightStrength); // remember here once was also the diffuseColor multipleid with strength
+  vec4 diffuse = vec4(light.diffuse, 1) * (diffuseLightStrength * diffuseColor); // remember here once was also the diffuseColor multipleid with strength
 
   // specular
   vec3 viewDirection = normalize(-FragPos); // we are in view space, so we take -FragPos only
@@ -50,5 +49,5 @@ void main()
   vec4 specular = vec4(light.specular, 1) * (spec * specularColor);
 
   vec4 finalLight = ambient + diffuse + specular;
-  FragColor = diffuseColor * finalLight;
+  FragColor = finalLight; // * diffuseColor was removed for now
 }

@@ -21,6 +21,19 @@ BlockRegistry::BlockRegistry()
               {"block_oak_log_top", "../assets/textures/block_oak_log_top.png"},
           },
           16),
+      specularAtlas(
+          std::unordered_map<std::string, std::string>{
+              {"block_diamond_ore", "../assets/textures/spec_block_diamond_ore.png"},
+              {"block_sand", "../assets/textures/spec_block_sand.png"},
+              {"block_dirt", "../assets/textures/spec_block_dirt.png"},
+              {"block_grass_top", "../assets/textures/spec_block_grass_top.png"},
+              {"block_grass_side", "../assets/textures/spec_block_grass_side.png"},
+              {"block_stone", "../assets/textures/spec_block_stone.png"},
+              {"block_lamp", "../assets/textures/spec_block_lamp_on.png"},
+              {"block_oak_log_side", "../assets/textures/spec_block_oak_log.png"},
+              {"block_oak_log_top", "../assets/textures/spec_block_oak_log_top.png"},
+          },
+          16),
       atlasTexture(textureAtlas.getTextureID())
 {
   registerBlock("x0v_block_grass", BlockType("block_grass_top", "block_dirt", "block_grass_side"));
@@ -37,8 +50,9 @@ void BlockRegistry::registerBlock(const std::string &blockId, const BlockType &b
   std::cout << "[BlockRegistry] Registering block " << blockId << std::endl;
 
   auto blockMesh = meshGenerator.generateBlockMesh(blockType, textureAtlas);
-  auto &providedShader = ShaderProvider::getInstance().getShader(blockType.shaderType); // yes this little shit here cost me 2 hours
+  auto &providedShader = ShaderProvider::getInstance().getShader(blockType.shaderType); // yes this little shit '&' here cost me 2 hours
   auto blockMaterial = std::make_unique<Material>(providedShader, atlasTexture);
+  blockMaterial->setSpecularTexture(specularAtlas.getTextureID());
   auto entity = std::make_unique<RenderEntity>(std::move(blockMesh), std::move(blockMaterial));
 
   blocks[blockId] = std::move(entity);

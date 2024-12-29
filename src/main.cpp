@@ -102,7 +102,7 @@ int main()
     // set shader uniforms
     ShaderProvider::getInstance().getShader(ShaderType::Block).setVec3("lightPos", lightPos);
     ShaderProvider::getInstance().getShader(ShaderType::Block).setVec3("light.diffuse", lightColor); // light color
-    ShaderProvider::getInstance().getShader(ShaderType::Block).setVec3("light.ambient", lightColor.toVec3() * glm::vec3(0.2f));
+    ShaderProvider::getInstance().getShader(ShaderType::Block).setVec3("light.ambient", lightColor.toVec3() * glm::vec3(0.1f));
     ShaderProvider::getInstance().getShader(ShaderType::Block).setVec3("light.specular", Color::white);
 
     ShaderProvider::getInstance().getShader(ShaderType::Block).setVec3("viewPos", camera.Position);

@@ -7,6 +7,11 @@ Material::Material(Shader &fragmentShader, Texture &diffuse, Texture *specular)
 
 Material::~Material()
 {
+  if (specularTexture)
+  {
+    std::cout << "[Material] Destructor invoked, deleting specular texture" << std::endl;
+    delete specularTexture;
+  }
 }
 
 void Material::bind() const
@@ -24,7 +29,6 @@ void Material::bind() const
     shader.setInt("material.specular", 1);
   }
 
-  shader.setVec4("material.ambient", ambientColor);
   shader.setFloat("material.shininess", shininess);
 }
 
@@ -59,10 +63,18 @@ void Material::setDiffuseTexture(Texture &texture)
 
 void Material::setSpecularTexture(Texture *texture)
 {
+  if (specularTexture)
+  {
+    delete specularTexture;
+  }
   this->specularTexture = texture;
 }
 
-void Material::setAmbientColor(Color color)
+void Material::setSpecularTexture(unsigned int texture)
 {
-  this->ambientColor = color;
+  if (specularTexture)
+  {
+    delete specularTexture;
+  }
+  this->specularTexture = new Texture(texture);
 }
