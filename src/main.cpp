@@ -12,6 +12,7 @@
 #include "renderer/render_entity/RenderEntity.h"
 #include "renderer/block/BlockRegistry.h"
 #include "renderer/shader/ShaderProvider.h"
+#include "renderer/color/Color.h"
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -60,6 +61,7 @@ int main()
   };
 
   RenderEntity *lamp = &blockRegistry.getBlockRenderEntity("x0v_block_lamp");
+  RenderEntity *oakLog = &blockRegistry.getBlockRenderEntity("x0v_block_oak_log");
 
   glm::vec3 cubePositions[] = {
       glm::vec3(-1.0f, -5.0f, -1.0f),
@@ -79,8 +81,8 @@ int main()
       glm::vec3(1.0f, -5.0f, 2.0f),
       glm::vec3(2.0f, -5.0f, 2.0f)};
 
-  bool moveLight = false;
-  glm::vec3 lightPos(-3.0f, -2.5f, 1.0f);
+  bool moveLight = true;
+  glm::vec3 lightPos(-3.0f, -1, 1.0f);
 
   while (!window.shouldClose())
   {
@@ -95,9 +97,14 @@ int main()
       lightPos.z = cos(time * 0.5f) * 2.0f;
     }
 
+    Color lightColor = Color::white;
+
     // set shader uniforms
     ShaderProvider::getInstance().getShader(ShaderType::Block).setVec3("lightPos", lightPos);
-    ShaderProvider::getInstance().getShader(ShaderType::Block).setVec3("lightColor", glm::vec3(1, 1, 1));
+    ShaderProvider::getInstance().getShader(ShaderType::Block).setVec3("light.diffuse", lightColor); // light color
+    ShaderProvider::getInstance().getShader(ShaderType::Block).setVec3("light.ambient", lightColor.toVec3() * glm::vec3(0.2f));
+    ShaderProvider::getInstance().getShader(ShaderType::Block).setVec3("light.specular", Color::white);
+
     ShaderProvider::getInstance().getShader(ShaderType::Block).setVec3("viewPos", camera.Position);
 
     for (unsigned int i = 0; i < (sizeof(cubePositions) / sizeof(cubePositions[0])); i++)
@@ -110,7 +117,13 @@ int main()
       renderer.renderEntity(cubeEntities[i % 5]);
     }
 
+    oakLog->getTransform().setPosition(glm::vec3(0.0f, -4.0f, 0.0f));
+    renderer.renderEntity(oakLog);
+    oakLog->getTransform().setPosition(glm::vec3(0.0f, -3.0f, 0.0f));
+    renderer.renderEntity(oakLog);
+
     lamp->getTransform().setPosition(lightPos);
+    lamp->getMaterial()->getShader().setVec3("lightColor", lightColor);
     lamp->getTransform().setScale(glm::vec3(0.4f));
     renderer.renderEntity(lamp);
 

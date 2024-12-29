@@ -21,8 +21,12 @@ public:
   operator glm::vec3() const { return glm::vec3(r, g, b); }
   operator glm::vec4() const { return glm::vec4(r, g, b, a); }
 
-  void darken(float amount);
-  void lighten(float amount);
+  glm::vec3 toVec3() const;
+  glm::vec4 toVec4() const;
+
+  Color &darken(float amount);
+  Color &lighten(float amount);
+  Color &alpha(float alpha);
 
   static const Color red;
   static const Color blue;

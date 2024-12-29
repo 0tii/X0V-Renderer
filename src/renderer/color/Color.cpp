@@ -33,18 +33,38 @@ Color::Color(float r, float g, float b, float a)
   this->a = a;
 }
 
-void Color::darken(float amount)
+glm::vec3 Color::toVec3() const
+{
+  return glm::vec3(r, g, b);
+}
+
+glm::vec4 Color::toVec4() const
+{
+  return glm::vec4(r, g, b, a);
+}
+
+Color &Color::darken(float amount)
 {
   r = std::max(r - amount, 0.0f);
   g = std::max(g - amount, 0.0f);
   b = std::max(b - amount, 0.0f);
+
+  return *this;
 }
 
-void Color::lighten(float amount)
+Color &Color::lighten(float amount)
 {
   r = std::min(r + amount, 1.0f);
   g = std::min(g + amount, 1.0f);
   b = std::min(b + amount, 1.0f);
+
+  return *this;
+}
+
+Color &Color::alpha(float alpha)
+{
+  a = std::min(std::max(alpha, 0.0f), 1.0f);
+  return *this;
 }
 
 const Color Color::red = Color(1, 0, 0);

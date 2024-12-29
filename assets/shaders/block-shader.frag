@@ -15,9 +15,17 @@ struct Material
   float shininess;
 };
 
-uniform Material material;
+struct Light
+{
+  vec3 position;
 
-uniform vec3 lightColor;
+  vec3 ambient; // ambient light color, usually set to dim value
+  vec3 diffuse; // lights color
+  vec3 specular; // specular intensity usually kept at vec3(1)
+};
+
+uniform Light light;
+uniform Material material;
 
 void main()
 {
@@ -25,21 +33,21 @@ void main()
   vec4 diffuseColor = texture(material.diffuse, TexCoord); 
   
   // -- vec4 specularColor = texture(material.specular, TexCoord);
-  vec4 specularColor = vec4(1.0); // !! <-- will be passed as texture(material.specular, TexCoord); from texture
+  vec4 specularColor = vec4(1); // !! <-- will be passed as texture(material.specular, TexCoord); from texture
 
-  vec4 ambient = vec4(lightColor, 1) * material.ambient;
+  vec4 ambient = vec4(light.ambient, 1) * (material.ambient);
 
   // diffuse lighting
   vec3 normalVector = normalize(Normal);
   vec3 lightDirection = normalize(LightPos - FragPos);
   float diffuseLightStrength = max(dot(normalVector, lightDirection), 0);
-  vec4 diffuse = vec4(lightColor, 1) * (diffuseLightStrength);
+  vec4 diffuse = vec4(light.diffuse, 1) * (diffuseLightStrength); // remember here once was also the diffuseColor multipleid with strength
 
   // specular
   vec3 viewDirection = normalize(-FragPos); // we are in view space, so we take -FragPos only
   vec3 reflectDirection = reflect(-lightDirection, normalVector);
-  float spec = pow(max(dot(viewDirection, reflectDirection), 0.0), material.shininess);
-  vec4 specular = vec4(lightColor, 1) * (spec * specularColor);
+  float spec = pow(max(dot(viewDirection, reflectDirection), 0.0), max(material.shininess, 0.01));
+  vec4 specular = vec4(light.specular, 1) * (spec * specularColor);
 
   vec4 finalLight = ambient + diffuse + specular;
   FragColor = diffuseColor * finalLight;

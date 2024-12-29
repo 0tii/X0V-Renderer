@@ -16,11 +16,15 @@ BlockRegistry::BlockRegistry()
               {"block_grass_top", "../assets/textures/block_grass_top.png"},
               {"block_grass_side", "../assets/textures/block_grass_side.png"},
               {"block_stone", "../assets/textures/block_stone.png"},
-              {"block_lamp", "../assets/textures/block_lamp_on.png"}},
+              {"block_lamp", "../assets/textures/block_lamp_on.png"},
+              {"block_oak_log_side", "../assets/textures/block_oak_log.png"},
+              {"block_oak_log_top", "../assets/textures/block_oak_log_top.png"},
+          },
           16),
       atlasTexture(textureAtlas.getTextureID())
 {
   registerBlock("x0v_block_grass", BlockType("block_grass_top", "block_dirt", "block_grass_side"));
+  registerBlock("x0v_block_oak_log", BlockType("block_oak_log_top", "block_oak_log_side"));
   registerBlock("x0v_block_dirt", BlockType("block_dirt"));
   registerBlock("x0v_block_diamond_ore", BlockType("block_diamond_ore"));
   registerBlock("x0v_block_sand", BlockType("block_sand"));

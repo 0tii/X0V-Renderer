@@ -30,7 +30,7 @@ private:
   float shininess = 32.0f;
   Texture &diffuseTexture;
   Texture *specularTexture;
-  Color ambientColor = Color(0.22f, 0.22f, 0.3f, 1);
+  Color ambientColor = Color(0.2f);
   // some day normal maps...
 };
 
