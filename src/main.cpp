@@ -97,7 +97,7 @@ int main()
 
     // set shader uniforms
     ShaderProvider::getInstance().getShader(ShaderType::Block).setVec3("lightPos", lightPos);
-    ShaderProvider::getInstance().getShader(ShaderType::Block).setVec3("lightColor", glm::vec3(1.0f, 0.8f, 0.55f));
+    ShaderProvider::getInstance().getShader(ShaderType::Block).setVec3("lightColor", glm::vec3(1, 1, 1));
     ShaderProvider::getInstance().getShader(ShaderType::Block).setVec3("viewPos", camera.Position);
 
     for (unsigned int i = 0; i < (sizeof(cubePositions) / sizeof(cubePositions[0])); i++)

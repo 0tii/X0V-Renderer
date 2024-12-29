@@ -4,6 +4,7 @@
 
 #include "renderer/shader/Shader.h"
 #include "renderer/texture/Texture.h"
+#include "renderer/color/Color.h"
 
 class Material
 {
@@ -22,12 +23,14 @@ public:
   void setShader(Shader &shader);
   void setDiffuseTexture(Texture &texture);
   void setSpecularTexture(Texture *texture);
+  void setAmbientColor(Color color);
 
 private:
   Shader &shader;
-  float shininess = 5.0f;
+  float shininess = 32.0f;
   Texture &diffuseTexture;
   Texture *specularTexture;
+  Color ambientColor = Color(0.22f, 0.22f, 0.3f, 1);
   // some day normal maps...
 };
 

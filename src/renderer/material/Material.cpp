@@ -24,6 +24,7 @@ void Material::bind() const
     shader.setInt("material.specular", 1);
   }
 
+  shader.setVec4("material.ambient", ambientColor);
   shader.setFloat("material.shininess", shininess);
 }
 
@@ -59,4 +60,9 @@ void Material::setDiffuseTexture(Texture &texture)
 void Material::setSpecularTexture(Texture *texture)
 {
   this->specularTexture = texture;
+}
+
+void Material::setAmbientColor(Color color)
+{
+  this->ambientColor = color;
 }
