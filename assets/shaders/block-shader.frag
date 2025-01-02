@@ -17,6 +17,9 @@ struct Material
 struct Light
 {
   vec3 position;
+  vec3 direction;
+  float cutOff;
+  float outerCutOff;
 
   vec3 ambient; // ambient light color, usually set to dim value
   vec3 diffuse; // lights color
@@ -35,34 +38,44 @@ uniform Material material;
 void main()
 {
   vec3 lightPos  = vec3(view * vec4(light.position, 1.0));
+  vec3 lightDirectionInViewSpace = vec3(view * vec4(light.direction, 0.0));
 
-  // pixel color taken from texture at fragment coord
-  vec4 diffuseColor = texture(material.diffuse, TexCoord); 
-  vec4 specularColor = clamp(texture(material.specular, TexCoord) + vec4(0.15), 0.0, 1.0); // small bump because maps are too dark
-  vec4 emissiveColor = texture(material.emissive, TexCoord);
-
-  vec4 ambient = vec4(light.ambient, 1) * diffuseColor;
-
-  // diffuse lighting
-  vec3 normalVector = normalize(Normal);
   vec3 lightDirection = normalize(lightPos - FragPos);
-  float diffuseLightStrength = max(dot(normalVector, lightDirection), 0);
-  vec4 diffuse = vec4(light.diffuse, 1) * (diffuseLightStrength * diffuseColor);
 
-  // specular
-  vec3 viewDirection = normalize(-FragPos); // we are in view space, so we take -FragPos only
-  vec3 reflectDirection = reflect(-lightDirection, normalVector);
-  float spec = pow(max(dot(viewDirection, reflectDirection), 0.0), max(material.shininess, 0.01));
-  vec4 specular = vec4(light.specular, 1) * (spec * specularColor);
+  float theta = dot(lightDirection, normalize(-lightDirectionInViewSpace));
+  float epsilon = light.cutOff - light.outerCutOff;
+  float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
 
-  // attenuation
-  float distance = length(lightPos - FragPos);
-  float attenuation = 1.0/(light.constant + light.linear * distance + light.quadratic * (distance * distance));
+    // pixel color taken from texture at fragment coord
+    vec4 diffuseColor = texture(material.diffuse, TexCoord); 
+    vec4 specularColor = clamp(texture(material.specular, TexCoord) + vec4(0.15), 0.0, 1.0); // small bump because maps are too dark
+    vec4 emissiveColor = texture(material.emissive, TexCoord);
 
-  ambient *= attenuation;
-  diffuse *= attenuation;
-  specular *= attenuation;
+    vec4 ambient = vec4(light.ambient, 1) * diffuseColor;
 
-  vec4 finalLight = ((ambient + diffuse + specular) * attenuation) + emissiveColor;
-  FragColor = vec4(finalLight.rgb, 1.0);
+    // diffuse lighting
+    vec3 normalVector = normalize(Normal);
+    float diffuseLightStrength = max(dot(normalVector, lightDirection), 0);
+    vec4 diffuse = vec4(light.diffuse, 1) * (diffuseLightStrength * diffuseColor);
+
+    // specular
+    vec3 viewDirection = normalize(-FragPos); // we are in view space, so we take -FragPos only
+    vec3 reflectDirection = reflect(-lightDirection, normalVector);
+    float spec = pow(max(dot(viewDirection, reflectDirection), 0.0), max(material.shininess, 0.01));
+    vec4 specular = vec4(light.specular, 1) * (spec * specularColor);
+
+    // attenuation
+    // float distance = length(lightPos - FragPos);
+    // float attenuation = 1.0/(light.constant + light.linear * distance + light.quadratic * (distance * distance));
+
+    // ambient *= attenuation;
+    // diffuse *= attenuation;
+    // specular *= attenuation;
+
+    diffuse *= intensity;
+    specular *= intensity;
+
+    vec4 finalLight = ((ambient + diffuse + specular)) + emissiveColor;
+
+    FragColor = vec4(finalLight.rgb, 1);
 }

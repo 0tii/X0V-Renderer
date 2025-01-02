@@ -79,7 +79,7 @@ int main()
       glm::vec3(1.0f, -5.0f, 2.0f),
       glm::vec3(2.0f, -5.0f, 2.0f)};
 
-  bool moveLight = true;
+  bool moveLight = false;
   glm::vec3 lightPos(-3.0f, -2, 1.0f);
 
   while (!window.shouldClose())
@@ -97,8 +97,11 @@ int main()
 
     Color lightColor = Color::white;
 
-    // set shader uniforms
-    ShaderProvider::getInstance().getShader(ShaderType::Block).setVec3("light.position", lightPos);
+    // normal light
+    ShaderProvider::getInstance().getShader(ShaderType::Block).setVec3("light.position", camera.Position);
+    ShaderProvider::getInstance().getShader(ShaderType::Block).setVec3("light.direction", camera.Front);
+    ShaderProvider::getInstance().getShader(ShaderType::Block).setFloat("light.cutOff", glm::cos(glm::radians(8.5f)));
+    ShaderProvider::getInstance().getShader(ShaderType::Block).setFloat("light.outerCutOff", glm::cos(glm::radians(11.5f)));
 
     ShaderProvider::getInstance().getShader(ShaderType::Block).setVec3("light.diffuse", lightColor); // light color
     ShaderProvider::getInstance().getShader(ShaderType::Block).setVec3("light.ambient", lightColor.toVec3() * glm::vec3(0.1f));
@@ -107,6 +110,8 @@ int main()
     ShaderProvider::getInstance().getShader(ShaderType::Block).setFloat("light.constant", 1.0);
     ShaderProvider::getInstance().getShader(ShaderType::Block).setFloat("light.quadratic", 0.09f);
     ShaderProvider::getInstance().getShader(ShaderType::Block).setFloat("light.linear", 0.032f);
+
+    // spotlight
 
     ShaderProvider::getInstance().getShader(ShaderType::Block).setVec3("viewPos", camera.Position);
 
@@ -128,7 +133,7 @@ int main()
     lamp->getTransform().setPosition(lightPos);
     lamp->getMaterial()->getShader().setVec3("lightColor", lightColor);
     lamp->getTransform().setScale(glm::vec3(0.4f));
-    renderer.renderEntity(lamp);
+    //! renderer.renderEntity(lamp);
 
     window.swapBuffers();
     window.pollEvents();
