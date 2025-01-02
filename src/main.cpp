@@ -93,8 +93,8 @@ int main()
     if (moveLight)
     {
       float time = glfwGetTime();
-      lightPos.x = sin(time * 0.5f) * 2.0f;
-      lightPos.z = cos(time * 0.5f) * 2.0f;
+      lightPos.x = sin(time * 0.5f) * 5.0f;
+      lightPos.z = cos(time * 0.5f) * 5.0f;
     }
 
     Color lightColor = Color::white;

@@ -47,6 +47,7 @@ public:
   void ProcessKeyboard(Camera_Movement direction, float deltaTime);
   void ProcessMouseMovement(float xOffset, float yOffset, GLboolean constrainPitch = true);
   void ProcessMouseScroll(float yOffset);
+  void setFlyY(bool value);
 
   void SetProjectionMatrix(float fov, float aspectRatio, float nearPlane, float farPlane);
 
@@ -57,4 +58,6 @@ private:
   glm::mat4 projectionMatrix = glm::mat4(1.0f);
   void updateCameraVectors();
   glm::mat4 BuildLookAtMatrix(glm::vec3 pos, glm::vec3 target, glm::vec3 worldUp);
+
+  bool yFlying = false;
 };
