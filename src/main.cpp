@@ -80,7 +80,7 @@ int main()
       glm::vec3(2.0f, -5.0f, 2.0f)};
 
   bool moveLight = true;
-  glm::vec3 lightPos(-3.0f, -1, 1.0f);
+  glm::vec3 lightPos(-3.0f, -2, 1.0f);
 
   while (!window.shouldClose())
   {
@@ -91,17 +91,22 @@ int main()
     if (moveLight)
     {
       float time = glfwGetTime();
-      lightPos.x = sin(time * 0.5f) * 5.0f;
-      lightPos.z = cos(time * 0.5f) * 5.0f;
+      lightPos.x = sin(time * 0.5f) * 3.0f;
+      lightPos.z = cos(time * 0.5f) * 3.0f;
     }
 
     Color lightColor = Color::white;
 
     // set shader uniforms
-    ShaderProvider::getInstance().getShader(ShaderType::Block).setVec3("lightPos", lightPos);
+    ShaderProvider::getInstance().getShader(ShaderType::Block).setVec3("light.position", lightPos);
+
     ShaderProvider::getInstance().getShader(ShaderType::Block).setVec3("light.diffuse", lightColor); // light color
     ShaderProvider::getInstance().getShader(ShaderType::Block).setVec3("light.ambient", lightColor.toVec3() * glm::vec3(0.1f));
     ShaderProvider::getInstance().getShader(ShaderType::Block).setVec3("light.specular", Color::white);
+
+    ShaderProvider::getInstance().getShader(ShaderType::Block).setFloat("light.constant", 1.0);
+    ShaderProvider::getInstance().getShader(ShaderType::Block).setFloat("light.quadratic", 0.09f);
+    ShaderProvider::getInstance().getShader(ShaderType::Block).setFloat("light.linear", 0.032f);
 
     ShaderProvider::getInstance().getShader(ShaderType::Block).setVec3("viewPos", camera.Position);
 
