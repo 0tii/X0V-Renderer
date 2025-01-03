@@ -105,15 +105,15 @@ int main()
     {
       // point light uniforms
       std::string base = "pointLights[" + std::to_string(i) + "]";
-      ShaderProvider::getInstance().getShader(ShaderType::Block).setVec3(base + ".position", camera.GetViewMatrix() * glm::vec4(lightPositions[i], 1.0));
+      ShaderProvider::getInstance().getShader(ShaderType::Surface).setVec3(base + ".position", camera.GetViewMatrix() * glm::vec4(lightPositions[i], 1.0));
 
-      ShaderProvider::getInstance().getShader(ShaderType::Block).setVec3(base + ".diffuse", lightColors[i % 4]); // light color
-      ShaderProvider::getInstance().getShader(ShaderType::Block).setVec3(base + ".ambient", glm::vec3(0.3f));
-      ShaderProvider::getInstance().getShader(ShaderType::Block).setVec3(base + ".specular", lightColors[i]);
+      ShaderProvider::getInstance().getShader(ShaderType::Surface).setVec3(base + ".diffuse", lightColors[i % 4]); // light color
+      ShaderProvider::getInstance().getShader(ShaderType::Surface).setVec3(base + ".ambient", glm::vec3(0.3f));
+      ShaderProvider::getInstance().getShader(ShaderType::Surface).setVec3(base + ".specular", lightColors[i]);
 
-      ShaderProvider::getInstance().getShader(ShaderType::Block).setFloat(base + ".constant", 1.0);
-      ShaderProvider::getInstance().getShader(ShaderType::Block).setFloat(base + ".quadratic", 0.09f);
-      ShaderProvider::getInstance().getShader(ShaderType::Block).setFloat(base + ".linear", 0.032f);
+      ShaderProvider::getInstance().getShader(ShaderType::Surface).setFloat(base + ".constant", 1.0);
+      ShaderProvider::getInstance().getShader(ShaderType::Surface).setFloat(base + ".quadratic", 0.09f);
+      ShaderProvider::getInstance().getShader(ShaderType::Surface).setFloat(base + ".linear", 0.032f);
 
       lamp->getTransform().setPosition(lightPositions[i]);
       lamp->getMaterial()->getShader().setVec3("lightColor", lightColors[i % 4]);
@@ -122,17 +122,17 @@ int main()
     }
 
     // directional light
-    ShaderProvider::getInstance().getShader(ShaderType::Block).setVec3("directionalLight.direction", glm::normalize(glm::vec3(camera.GetViewMatrix() * glm::vec4(0.3f, -1.0f, 0.2f, 0.0f))));
+    ShaderProvider::getInstance().getShader(ShaderType::Surface).setVec3("directionalLight.direction", glm::normalize(glm::vec3(camera.GetViewMatrix() * glm::vec4(0.3f, -1.0f, 0.2f, 0.0f))));
 
-    ShaderProvider::getInstance().getShader(ShaderType::Block).setVec3("directionalLight.diffuse", lightColor);
-    ShaderProvider::getInstance().getShader(ShaderType::Block).setVec3("directionalLight.ambient", glm::vec3(0.2f));
-    ShaderProvider::getInstance().getShader(ShaderType::Block).setVec3("directionalLight.specular", Color::white);
+    ShaderProvider::getInstance().getShader(ShaderType::Surface).setVec3("directionalLight.diffuse", lightColor);
+    ShaderProvider::getInstance().getShader(ShaderType::Surface).setVec3("directionalLight.ambient", glm::vec3(0.2f));
+    ShaderProvider::getInstance().getShader(ShaderType::Surface).setVec3("directionalLight.specular", Color::white);
 
     // spotLight
-    ShaderProvider::getInstance().getShader(ShaderType::Block).setVec3("spotLight.position", camera.GetViewMatrix() * glm::vec4(camera.Position, 1.0));
-    ShaderProvider::getInstance().getShader(ShaderType::Block).setVec3("spotLight.direction", camera.GetViewMatrix() * glm::vec4(camera.Front, 0.0));
-    ShaderProvider::getInstance().getShader(ShaderType::Block).setFloat("spotLight.cutOff", glm::cos(glm::radians(5.5f)));
-    ShaderProvider::getInstance().getShader(ShaderType::Block).setFloat("spotLight.outerCutOff", glm::cos(glm::radians(8.5f)));
+    ShaderProvider::getInstance().getShader(ShaderType::Surface).setVec3("spotLight.position", camera.GetViewMatrix() * glm::vec4(camera.Position, 1.0));
+    ShaderProvider::getInstance().getShader(ShaderType::Surface).setVec3("spotLight.direction", camera.GetViewMatrix() * glm::vec4(camera.Front, 0.0));
+    ShaderProvider::getInstance().getShader(ShaderType::Surface).setFloat("spotLight.cutOff", glm::cos(glm::radians(5.5f)));
+    ShaderProvider::getInstance().getShader(ShaderType::Surface).setFloat("spotLight.outerCutOff", glm::cos(glm::radians(8.5f)));
 
     for (unsigned int i = 0; i < (sizeof(cubePositions) / sizeof(cubePositions[0])); i++)
     {

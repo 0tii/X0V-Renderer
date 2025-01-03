@@ -52,7 +52,7 @@ BlockRegistry::BlockRegistry()
   registerBlock("x0v_block_grass", BlockType("block_grass_top", "block_dirt", "block_grass_side"));
   registerBlock("x0v_block_oak_log", BlockType("block_oak_log_top", "block_oak_log_side"));
   registerBlock("x0v_block_dirt", BlockType("block_dirt"));
-  registerBlock("x0v_block_diamond_ore", BlockType("block_diamond_ore", ShaderType::Block, true));
+  registerBlock("x0v_block_diamond_ore", BlockType("block_diamond_ore", ShaderType::Surface, true));
   registerBlock("x0v_block_sand", BlockType("block_sand"));
   registerBlock("x0v_block_stone", BlockType("block_stone"));
   registerBlock("x0v_block_lamp", BlockType("block_lamp", ShaderType::LightBlock));

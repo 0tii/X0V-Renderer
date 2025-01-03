@@ -87,6 +87,11 @@
     "**/.vscode/templates/**": true
   },
   "C_Cpp.files.exclude": {
-    "**/.vscode/templates/**": true
-  }
+    "**/.vscode/templates/**": true,
+    "**/build/**": true
+  },
+  "vscode_custom_css.imports": [
+    "file:///C:/.vscode/custom/custom.css",
+    "file:///C:/.vscode/custom/custom.js",
+  ]
 }
