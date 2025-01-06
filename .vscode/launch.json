@@ -1,17 +1,17 @@
 {
   "version": "0.2.0",
   "configurations": [
-      {
-          "name": "Debug AbandonedCrypt",
-          "type": "cppvsdbg",
-          "request": "launch",
-          "program": "${workspaceFolder}/build/Debug/AbandonedCrypt.exe",
-          "args": [],
-          "stopAtEntry": false,
-          "cwd": "${workspaceFolder}/build",
-          "environment": [],
-          "console": "externalTerminal",
-          "preLaunchTask": "CMake: build",
-      }
+    {
+      "name": "Debug X0V",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/Debug/X0V.exe",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}/build",
+      "environment": [],
+      "console": "externalTerminal",
+      "preLaunchTask": "CMake: build",
+    }
   ]
 }

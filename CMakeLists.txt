@@ -27,15 +27,15 @@ set(EXTERNAL_SOURCES
 set(SOURCES ${PROJECT_SOURCES} ${EXTERNAL_SOURCES})
 
 # build binary
-add_executable(AbandonedCrypt ${SOURCES})
+add_executable(X0V ${SOURCES})
 
 # include dirs
-target_include_directories(AbandonedCrypt 
+target_include_directories(X0V 
     PUBLIC 
     ${CMAKE_SOURCE_DIR}/src    # project sources
     ${CMAKE_SOURCE_DIR}/../Deps/include # dependencies
 )
 
 # linking
-target_link_directories(AbandonedCrypt PUBLIC ${CMAKE_SOURCE_DIR}/../Deps/lib)
-target_link_libraries(AbandonedCrypt glfw3 opengl32)
+target_link_directories(X0V PUBLIC ${CMAKE_SOURCE_DIR}/../Deps/lib)
+target_link_libraries(X0V glfw3 opengl32)

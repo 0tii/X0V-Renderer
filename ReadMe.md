@@ -32,6 +32,10 @@ Libraries used currently:
 * [ ] Frustrum Culling
 * [X] Diffuse / Specular Lighting
 * [X] Colored Light
+* [ ] Light Abstraction
+* [ ] 3D Object loading (.obj, .fbx)
+* [ ] PBR
 * [ ] World Generation
 * [ ] Block placing
 * [ ] Block breaking
+* [ ] Greedy Meshing
