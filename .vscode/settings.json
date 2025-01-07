@@ -93,5 +93,6 @@
   "vscode_custom_css.imports": [
     "file:///C:/.vscode/custom/custom.css",
     "file:///C:/.vscode/custom/custom.js",
-  ]
+  ],
+  "terminal.integrated.fontFamily": "'Jetbrains Mono', monospace"
 }

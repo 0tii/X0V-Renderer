@@ -16,6 +16,9 @@ file(GLOB_RECURSE PROJECT_SOURCES src/*.cpp)
 list(REMOVE_ITEM PROJECT_SOURCES ${CMAKE_SOURCE_DIR}/src/renderer/mesh/VertexAttribute.cpp) # its header-only
 list(REMOVE_ITEM PROJECT_SOURCES ${CMAKE_SOURCE_DIR}/src/renderer/mesh/DefaultMaterial.cpp) # its header-only
 list(REMOVE_ITEM PROJECT_SOURCES ${CMAKE_SOURCE_DIR}/src/shader/ShaderType.cpp) # its header-only
+list(REMOVE_ITEM PROJECT_SOURCES ${CMAKE_SOURCE_DIR}/src/light/DirectionalLight.cpp) # its header-only
+list(REMOVE_ITEM PROJECT_SOURCES ${CMAKE_SOURCE_DIR}/src/light/PointLight.cpp) # its header-only
+list(REMOVE_ITEM PROJECT_SOURCES ${CMAKE_SOURCE_DIR}/src/light/SpotLight.cpp) # its header-only
 
 # explicit externals
 set(EXTERNAL_SOURCES 
