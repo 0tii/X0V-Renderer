@@ -11,6 +11,9 @@
 #include "renderer/block/BlockRegistry.h"
 #include "renderer/shader/ShaderProvider.h"
 #include "renderer/color/Color.h"
+#include "renderer/scene/Scene.h"
+#include "renderer/light/lights/PointLight.h"
+#include "renderer/light/lights/DirectionalLight.h"
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -50,17 +53,6 @@ int main()
   // init blockregistry
   BlockRegistry &blockRegistry = BlockRegistry::getInstance();
 
-  RenderEntity *cubeEntities[] = {
-      &blockRegistry.getBlockRenderEntity("x0v_block_dirt"),
-      &blockRegistry.getBlockRenderEntity("x0v_block_diamond_ore"),
-      &blockRegistry.getBlockRenderEntity("x0v_block_sand"),
-      &blockRegistry.getBlockRenderEntity("x0v_block_grass"),
-      &blockRegistry.getBlockRenderEntity("x0v_block_stone"),
-  };
-
-  RenderEntity *lamp = &blockRegistry.getBlockRenderEntity("x0v_block_lamp");
-  RenderEntity *oakLog = &blockRegistry.getBlockRenderEntity("x0v_block_oak_log");
-
   glm::vec3 cubePositions[] = {
       glm::vec3(-1.0f, -5.0f, -1.0f),
       glm::vec3(0.0f, -5.0f, -1.0f),
@@ -79,75 +71,79 @@ int main()
       glm::vec3(1.0f, -5.0f, 2.0f),
       glm::vec3(2.0f, -5.0f, 2.0f)};
 
-  glm::vec3 lightPositions[] = {
-      glm::vec3(-2.0f, -3.0f, -2.0f),
-      glm::vec3(3.0f, -3.0f, -2.0f),
-      glm::vec3(-2.0f, -3.0f, 3.0f),
-      glm::vec3(3.0f, -3.0f, 3.0f),
-  };
-
-  glm::vec3 lightColors[] = {
-      glm::vec3(0.0f, 0.8f, 0.0f), // green
-      glm::vec3(0.0f, 0.0f, 1.0f), // blue
-      glm::vec3(0.8f, 0.0f, 0.0f), // red
-      glm::vec3(0.8f, 0.8f, 0.0f), // yellow
-  };
-
   while (!window.shouldClose())
   {
     processInput(window.getWindow());
 
     renderer.initFrame(glm::vec3(0));
+    Scene testScene = Scene();
 
-    glm::vec3 lightColor = glm::vec3(.4f);
+    // add directional light
+    auto dirLightDir = glm::normalize(glm::vec3(camera.GetViewMatrix() * glm::vec4(0.3f, -1.0f, 0.2f, 0.0f)));
+    DirectionalLight dirLight = DirectionalLight(dirLightDir, glm::vec3(.4f), glm::vec3(.7f));
+    testScene.getLightManager()->addDirectionalLight(dirLight);
 
-    for (int i = 0; i < sizeof(lightPositions) / sizeof(glm::vec3); ++i)
-    {
-      // point light uniforms
-      std::string base = "pointLights[" + std::to_string(i) + "]";
-      ShaderProvider::getInstance().getShader(ShaderType::Surface).setVec3(base + ".position", camera.GetViewMatrix() * glm::vec4(lightPositions[i], 1.0));
+    // add point light
+    auto pointLightPosition = camera.GetViewMatrix() * glm::vec4(glm::vec3(-2.0f, -3.0f, -2.0f), 1.0f);
+    PointLight pl = PointLight(pointLightPosition, glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(.1f), glm::vec3(.7f), 1.0f, 0.09f, 0.032f);
+    testScene.getLightManager()->addPointLight(pl);
 
-      ShaderProvider::getInstance().getShader(ShaderType::Surface).setVec3(base + ".diffuse", lightColors[i % 4]); // light color
-      ShaderProvider::getInstance().getShader(ShaderType::Surface).setVec3(base + ".ambient", glm::vec3(0.3f));
-      ShaderProvider::getInstance().getShader(ShaderType::Surface).setVec3(base + ".specular", lightColors[i]);
+    std::unique_ptr<RenderEntity> lampEntity2 = blockRegistry.createBlock("x0v_block_lamp", BlockType("block_lamp", ShaderType::LightBlock));
+    lampEntity2->getTransform().setPosition(glm::vec3(-2.0f, -3.0f, -2.0f));
+    lampEntity2->getMaterial()->getShader().setVec3("lightColor", glm::vec3(0.0f, 0.0f, 1.0f));
+    lampEntity2->getTransform().setScale(glm::vec3(0.4f));
 
-      ShaderProvider::getInstance().getShader(ShaderType::Surface).setFloat(base + ".constant", 1.0);
-      ShaderProvider::getInstance().getShader(ShaderType::Surface).setFloat(base + ".quadratic", 0.09f);
-      ShaderProvider::getInstance().getShader(ShaderType::Surface).setFloat(base + ".linear", 0.032f);
+    testScene.addEntity(std::move(lampEntity2));
 
-      lamp->getTransform().setPosition(lightPositions[i]);
-      lamp->getMaterial()->getShader().setVec3("lightColor", lightColors[i % 4]);
-      lamp->getTransform().setScale(glm::vec3(0.4f));
-      renderer.renderEntity(lamp);
-    }
+    // add point light 2
+    auto pointLightPosition2 = camera.GetViewMatrix() * glm::vec4(glm::vec3(2.0f, -3.0f, 2.0f), 1.0f);
+    PointLight pl2 = PointLight(pointLightPosition, glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(.1f), glm::vec3(.7f), 1.0f, 0.09f, 0.032f);
+    testScene.getLightManager()->addPointLight(pl2);
 
-    // directional light
-    ShaderProvider::getInstance().getShader(ShaderType::Surface).setVec3("directionalLight.direction", glm::normalize(glm::vec3(camera.GetViewMatrix() * glm::vec4(0.3f, -1.0f, 0.2f, 0.0f))));
+    std::unique_ptr<RenderEntity> lampEntity = blockRegistry.createBlock("x0v_block_lamp", BlockType("block_lamp", ShaderType::LightBlock));
+    lampEntity->getTransform().setPosition(glm::vec3(2.0f, -3.0f, 2.0f));
+    lampEntity->getMaterial()->getShader().setVec3("lightColor", glm::vec3(1.0f, 0.0f, 0.0f));
+    lampEntity->getTransform().setScale(glm::vec3(0.4f));
 
-    ShaderProvider::getInstance().getShader(ShaderType::Surface).setVec3("directionalLight.diffuse", lightColor);
-    ShaderProvider::getInstance().getShader(ShaderType::Surface).setVec3("directionalLight.ambient", glm::vec3(0.2f));
-    ShaderProvider::getInstance().getShader(ShaderType::Surface).setVec3("directionalLight.specular", Color::white);
-
-    // spotLight
-    ShaderProvider::getInstance().getShader(ShaderType::Surface).setVec3("spotLight.position", camera.GetViewMatrix() * glm::vec4(camera.Position, 1.0));
-    ShaderProvider::getInstance().getShader(ShaderType::Surface).setVec3("spotLight.direction", camera.GetViewMatrix() * glm::vec4(camera.Front, 0.0));
-    ShaderProvider::getInstance().getShader(ShaderType::Surface).setFloat("spotLight.cutOff", glm::cos(glm::radians(5.5f)));
-    ShaderProvider::getInstance().getShader(ShaderType::Surface).setFloat("spotLight.outerCutOff", glm::cos(glm::radians(8.5f)));
+    testScene.addEntity(std::move(lampEntity));
 
     for (unsigned int i = 0; i < (sizeof(cubePositions) / sizeof(cubePositions[0])); i++)
     {
-      // enable wireframe for every 2nd block
-      // renderer.setWireframeRendering((i % 3 == 0));
+      std::unique_ptr<RenderEntity> renderBlock;
 
-      cubeEntities[i % 5]->getTransform().setPosition(cubePositions[i]);
+      switch (i % 5)
+      {
+      case 0:
+        renderBlock = blockRegistry.createBlock("x0v_block_grass", BlockType("block_grass_top", "block_dirt", "block_grass_side"));
+        break;
+      case 1:
+        renderBlock = blockRegistry.createBlock("x0v_block_dirt", BlockType("block_dirt"));
+        break;
+      case 2:
+        renderBlock = blockRegistry.createBlock("x0v_block_diamond_ore", BlockType("block_diamond_ore", ShaderType::Surface, true));
+        break;
+      case 3:
+        renderBlock = blockRegistry.createBlock("x0v_block_sand", BlockType("block_sand"));
+        break;
+      case 4:
+        renderBlock = blockRegistry.createBlock("x0v_block_stone", BlockType("block_stone"));
+        break;
+      }
 
-      renderer.renderEntity(cubeEntities[i % 5]);
+      renderBlock->getTransform().setPosition(cubePositions[i]);
+
+      testScene.addEntity(std::move(renderBlock));
     }
 
+    auto oakLog = blockRegistry.createBlock("x0v_block_oak_log", BlockType("block_oak_log_top", "block_oak_log_side"));
     oakLog->getTransform().setPosition(glm::vec3(0.0f, -4.0f, 0.0f));
-    renderer.renderEntity(oakLog);
+    testScene.addEntity(std::move(oakLog));
+
+    oakLog = blockRegistry.createBlock("x0v_block_oak_log", BlockType("block_oak_log_top", "block_oak_log_side"));
     oakLog->getTransform().setPosition(glm::vec3(0.0f, -3.0f, 0.0f));
-    renderer.renderEntity(oakLog);
+    testScene.addEntity(std::move(oakLog));
+
+    renderer.renderScene(&testScene);
 
     window.swapBuffers();
     window.pollEvents();

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 project(X0V)
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # set(CMAKE_BUILD_TYPE Debug)
@@ -8,6 +8,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_compile_definitions(DEBUG)
 endif()
+
+add_compile_definitions(GLM_FORCE_DEFAULT_ALIGNED_GENTYPES)
 
 # recursively get all source files
 file(GLOB_RECURSE PROJECT_SOURCES src/*.cpp)
@@ -19,6 +21,7 @@ list(REMOVE_ITEM PROJECT_SOURCES ${CMAKE_SOURCE_DIR}/src/shader/ShaderType.cpp) 
 list(REMOVE_ITEM PROJECT_SOURCES ${CMAKE_SOURCE_DIR}/src/light/DirectionalLight.cpp) # its header-only
 list(REMOVE_ITEM PROJECT_SOURCES ${CMAKE_SOURCE_DIR}/src/light/PointLight.cpp) # its header-only
 list(REMOVE_ITEM PROJECT_SOURCES ${CMAKE_SOURCE_DIR}/src/light/SpotLight.cpp) # its header-only
+list(REMOVE_ITEM PROJECT_SOURCES ${CMAKE_SOURCE_DIR}/src/light/LightData.cpp) # its header-only
 
 # explicit externals
 set(EXTERNAL_SOURCES 

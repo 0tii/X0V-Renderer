@@ -13,7 +13,8 @@
 struct DirectionalLight
 {
 public:
+  DirectionalLight() = default;
   DirectionalLight(glm::vec3 direction, glm::vec3 diffuse, glm::vec3 specular, glm::vec3 ambient = glm::vec3(0.2f));
 
-  glm::vec3 direction, diffuse, ambient, specular;
+  glm::vec3 direction, diffuse, specular, ambient;
 };

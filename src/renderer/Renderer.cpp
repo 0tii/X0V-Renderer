@@ -76,6 +76,36 @@ void Renderer::renderEntity(RenderEntity *entity) const
   this->renderEntity(*entity);
 }
 
+void Renderer::renderScene(Scene *scene) const
+{
+  scene->getLightManager()->updateUBO();
+  unsigned int surfaceShaderId = ShaderProvider::getInstance().getShader(ShaderType::Surface).ID;
+
+  for (auto &entity : scene->getEntities())
+  {
+    auto dirLights = scene->getLightManager()->getApplicableDirLights(*entity);
+    auto pointLights = scene->getLightManager()->getApplicablePointLights(*entity);
+    auto spotLights = scene->getLightManager()->getApplicableSpotLights(*entity);
+
+    // TODO: send light data to shader
+    glUniform1iv(glGetUniformLocation(surfaceShaderId, "dirLightIndices"),
+                 dirLights.size(), dirLights.data());
+    glUniform1iv(glGetUniformLocation(surfaceShaderId, "pointLightIndices"),
+                 pointLights.size(), pointLights.data());
+    glUniform1iv(glGetUniformLocation(surfaceShaderId, "spotLightIndices"),
+                 spotLights.size(), spotLights.data());
+
+    glUniform1i(glGetUniformLocation(surfaceShaderId, "numApplicableDirLights"),
+                dirLights.size());
+    glUniform1i(glGetUniformLocation(surfaceShaderId, "numApplicablePointLights"),
+                pointLights.size());
+    glUniform1i(glGetUniformLocation(surfaceShaderId, "numApplicableSpotLights"),
+                spotLights.size());
+
+    renderEntity(*entity);
+  }
+}
+
 void Renderer::setActiveCamera(Camera *camera)
 {
   this->activeCamera = camera;

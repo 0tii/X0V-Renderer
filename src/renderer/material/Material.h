@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <glm/glm.hpp>
 
 #include "renderer/shader/Shader.h"
 #include "renderer/texture/Texture.h"
@@ -30,6 +31,7 @@ private:
   Shader &shader;
   float shininess = 32.0f;
   Texture &diffuseTexture;
+  glm::vec3 specularColor;
   Texture *specularTexture;
   Texture *emissiveTexture;
   // some day normal maps...

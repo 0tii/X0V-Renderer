@@ -76,6 +76,27 @@ void BlockRegistry::registerBlock(const std::string &blockId, const BlockType &b
   blocks[blockId] = std::move(entity);
 }
 
+/// @brief instead of adding a unique pointer to a block render entity, this creates a new unique entity
+/// @param blockId
+/// @param blockType
+/// @return
+std::unique_ptr<RenderEntity> BlockRegistry::createBlock(const std::string &blockId, const BlockType &blockType)
+{
+  // std::cout << "[BlockRegistry] Creating block " << blockId << std::endl;
+
+  auto blockMesh = meshGenerator.generateBlockMesh(blockType, textureAtlas);
+  auto &providedShader = ShaderProvider::getInstance().getShader(blockType.shaderType); // yes this little shit '&' here cost me 2 hours
+  auto blockMaterial = std::make_unique<Material>(providedShader, atlasTexture);
+  blockMaterial->setSpecularTexture(specularAtlas.getTextureID());
+  if (blockType.emit)
+  {
+    auto emissiveId = emissionAtlas.getTextureID(); // Validate this
+    blockMaterial->setEmissiveTexture(emissiveId);
+  }
+
+  return std::make_unique<RenderEntity>(std::move(blockMesh), std::move(blockMaterial));
+}
+
 RenderEntity &BlockRegistry::getBlockRenderEntity(const std::string &id)
 {
   auto result = blocks.find(id);

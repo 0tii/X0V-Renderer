@@ -13,8 +13,10 @@
 #include <glm/glm.hpp>
 
 #include "renderer/camera/Camera.h"
+#include "renderer/scene/Scene.h"
 #include "renderer/shader/Shader.h"
 #include "renderer/render_entity/RenderEntity.h"
+#include "renderer/shader/ShaderProvider.h"
 
 class Renderer
 {
@@ -29,6 +31,8 @@ public:
 
   void renderEntity(RenderEntity &entity) const;
   void renderEntity(RenderEntity *entity) const;
+
+  void renderScene(Scene *scene) const;
 
   // --- debug ---
   void listCameras() const;

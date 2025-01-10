@@ -9,12 +9,12 @@ Material::~Material()
 {
   if (specularTexture)
   {
-    std::cout << "[Material] Destructor invoked, deleting specular texture" << std::endl;
+    // std::cout << "[Material] Destructor invoked, deleting specular texture" << std::endl;
     delete specularTexture;
   }
   if (emissiveTexture)
   {
-    std::cout << "[Material] Destructor invoked, deleting emissive texture" << std::endl;
+    // std::cout << "[Material] Destructor invoked, deleting emissive texture" << std::endl;
     delete emissiveTexture;
   }
 }

@@ -12,8 +12,12 @@
 
 struct PointLight
 {
+  PointLight() = default;
   PointLight(glm::vec3 position, glm::vec3 diffuse, glm::vec3 ambient, glm::vec3 specular, float constant, float linear, float quadratic);
 
-  glm::vec3 position, diffuse, ambient, specular;
-  float constant, linear, quadratic;
+  glm::vec3 position;
+
+  float constant, linear, quadratic, padding;
+
+  glm::vec3 diffuse, ambient, specular;
 };
