@@ -76,9 +76,9 @@ void Renderer::renderEntity(RenderEntity *entity) const
   this->renderEntity(*entity);
 }
 
-void Renderer::renderScene(Scene *scene) const
+void Renderer::renderScene(Scene *scene, Camera &activeCamera) const
 {
-  scene->getLightManager()->updateUBO();
+  scene->getLightManager()->updateUBO(activeCamera);
   unsigned int surfaceShaderId = ShaderProvider::getInstance().getShader(ShaderType::Surface).ID;
 
   for (auto &entity : scene->getEntities())

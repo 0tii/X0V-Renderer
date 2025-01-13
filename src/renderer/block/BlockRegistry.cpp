@@ -68,7 +68,7 @@ void BlockRegistry::registerBlock(const std::string &blockId, const BlockType &b
   blockMaterial->setSpecularTexture(specularAtlas.getTextureID());
   if (blockType.emit)
   {
-    auto emissiveId = emissionAtlas.getTextureID(); // Validate this
+    auto emissiveId = emissionAtlas.getTextureID();
     blockMaterial->setEmissiveTexture(emissiveId);
   }
   auto entity = std::make_unique<RenderEntity>(std::move(blockMesh), std::move(blockMaterial));
@@ -90,7 +90,7 @@ std::unique_ptr<RenderEntity> BlockRegistry::createBlock(const std::string &bloc
   blockMaterial->setSpecularTexture(specularAtlas.getTextureID());
   if (blockType.emit)
   {
-    auto emissiveId = emissionAtlas.getTextureID(); // Validate this
+    auto emissiveId = emissionAtlas.getTextureID();
     blockMaterial->setEmissiveTexture(emissiveId);
   }
 

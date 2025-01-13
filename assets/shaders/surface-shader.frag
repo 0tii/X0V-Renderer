@@ -80,12 +80,14 @@ vec3 CalculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 viewDir
 float CalculateSpotLightIntensity(SpotLight light, vec3 fragPos, vec3 diffuseColor, vec3 specularColor);
 
 void main() {
+  vec3 minSpecular = vec3(.2);
+
   vec3 norm = normalize(Normal);
   vec3 viewDir = normalize(-FragPos);
 
   vec3 diffuseTexelColor = vec3(texture(material.diffuse, TexCoord));
-  vec3 specularTexelColor = vec3(texture(material.specular, TexCoord));
-  vec4 emissionTexelColor = texture(material.emissive, TexCoord);
+  vec3 specularTexelColor = vec3(texture(material.specular, TexCoord)) + minSpecular;
+  vec3 emissionTexelColor = vec3(texture(material.emissive, TexCoord));
 
   vec3 result = vec3(0);
 
@@ -104,7 +106,9 @@ void main() {
     result += CalculatePointLight(pointLights[currentIndex], norm, FragPos, viewDir, diffuseTexelColor, specularTexelColor);
   }
 
-  FragColor = vec4(result, 1) + emissionTexelColor;
+  result += emissionTexelColor;
+
+  FragColor = vec4(result, 1);
 }
 
 vec3 CalculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 viewDir, vec3 diffuseColor, vec3 specularColor) {

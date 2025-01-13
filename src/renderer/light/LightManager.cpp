@@ -14,16 +14,48 @@ LightManager::LightManager()
     initializeUBO();
 }
 
-void LightManager::updateUBO()
+void LightManager::updateUBO(Camera &activeCamera)
 {
+    glm::mat4 viewMatrix = activeCamera.GetViewMatrix();
+
     LightData lightData;
     lightData.numDirectionalLights = directionalLights.size();
     lightData.numPointLights = pointLights.size();
     lightData.numSpotLights = spotLights.size();
 
-    std::copy(directionalLights.begin(), directionalLights.end(), lightData.directionalLights.data());
-    std::copy(pointLights.begin(), pointLights.end(), lightData.pointLights.data());
-    std::copy(spotLights.begin(), spotLights.end(), lightData.spotLights.data());
+    auto transformVector = [&](const glm::vec3 &vec, float w)
+    {
+        return glm::vec3(viewMatrix * glm::vec4(vec, w));
+    };
+
+    for (size_t i = 0; i < directionalLights.size(); ++i)
+    {
+        lightData.directionalLights[i].direction = transformVector(directionalLights[i].direction, 0.0f);
+        lightData.directionalLights[i].ambient = directionalLights[i].ambient;
+        lightData.directionalLights[i].diffuse = directionalLights[i].diffuse;
+        lightData.directionalLights[i].specular = directionalLights[i].specular;
+    }
+
+    // Transform point lights
+    for (size_t i = 0; i < pointLights.size(); ++i)
+    {
+        lightData.pointLights[i].position = transformVector(pointLights[i].position, 1.0f);
+        lightData.pointLights[i].ambient = pointLights[i].ambient;
+        lightData.pointLights[i].diffuse = pointLights[i].diffuse;
+        lightData.pointLights[i].specular = pointLights[i].specular;
+        lightData.pointLights[i].constant = pointLights[i].constant;
+        lightData.pointLights[i].linear = pointLights[i].linear;
+        lightData.pointLights[i].quadratic = pointLights[i].quadratic;
+    }
+
+    // Transform spotlights
+    for (size_t i = 0; i < spotLights.size(); ++i)
+    {
+        lightData.spotLights[i].position = transformVector(spotLights[i].position, 1.0f);
+        lightData.spotLights[i].direction = transformVector(spotLights[i].direction, 0.0f);
+        lightData.spotLights[i].cutOff = spotLights[i].cutOff;
+        lightData.spotLights[i].outerCutOff = spotLights[i].outerCutOff;
+    }
 
     glBindBuffer(GL_UNIFORM_BUFFER, lightUBO);
     glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(LightData), &lightData);

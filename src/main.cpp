@@ -19,6 +19,7 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
 void mouse_callback(GLFWwindow *window, double xpos, double ypos);
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
+void modifyScene(Scene &testScene, BlockRegistry &blockRegistry);
 
 const unsigned int SCR_WIDTH = 1280;
 const unsigned int SCR_HEIGHT = 720;
@@ -50,9 +51,34 @@ int main()
   camera.SetProjectionMatrix(fov, (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
   renderer.setActiveCamera(&camera);
 
-  // init blockregistry
   BlockRegistry &blockRegistry = BlockRegistry::getInstance();
 
+  Scene testScene = Scene();
+  modifyScene(testScene, blockRegistry);
+
+  while (!window.shouldClose())
+  {
+    std::cout << "\n---- Start of Frame ----\n";
+
+    processInput(window.getWindow());
+
+    renderer.initFrame(glm::vec3(0));
+
+    renderer.renderScene(&testScene, camera);
+
+    window.swapBuffers();
+    window.pollEvents();
+
+    float currentFrame = static_cast<float>(glfwGetTime());
+    deltaTime = currentFrame - lastFrame;
+    lastFrame = currentFrame;
+  }
+
+  return 0;
+}
+
+void modifyScene(Scene &testScene, BlockRegistry &blockRegistry)
+{
   glm::vec3 cubePositions[] = {
       glm::vec3(-1.0f, -5.0f, -1.0f),
       glm::vec3(0.0f, -5.0f, -1.0f),
@@ -71,89 +97,70 @@ int main()
       glm::vec3(1.0f, -5.0f, 2.0f),
       glm::vec3(2.0f, -5.0f, 2.0f)};
 
-  while (!window.shouldClose())
+  // add directional light
+  auto dirLightDir = glm::normalize(glm::vec3(glm::vec4(0.3f, -1.0f, 0.2f, 0.0f)));
+  DirectionalLight dirLight = DirectionalLight(dirLightDir, glm::vec3(.4f), glm::vec3(.7f));
+  testScene.getLightManager()->addDirectionalLight(dirLight);
+
+  // add point light
+  auto pointLightPosition = glm::vec3(-2.0f, -3.0f, -2.0f);
+  PointLight pl = PointLight(pointLightPosition, glm::vec3(1.0f, 0.0f, .0f), glm::vec3(.1f), glm::vec3(.7f), 1.0f, 0.08f, 0.032f);
+  testScene.getLightManager()->addPointLight(pl);
+
+  std::unique_ptr<RenderEntity> lampEntity2 = blockRegistry.createBlock("x0v_block_lamp", BlockType("block_lamp", ShaderType::LightBlock));
+  lampEntity2->getTransform().setPosition(glm::vec3(-2.0f, -3.0f, -2.0f));
+  lampEntity2->getMaterial()->getShader().setVec3("lightColor", glm::vec3(1.0f));
+  lampEntity2->getTransform().setScale(glm::vec3(0.4f));
+
+  testScene.addEntity(std::move(lampEntity2));
+
+  // add point light 2
+  auto pointLightPosition2 = glm::vec3(2.0f, -3.0f, 2.0f);
+  PointLight pl2 = PointLight(pointLightPosition2, glm::vec3(1.0f, 1.0f, 0.0f), glm::vec3(.1f), glm::vec3(.7f), 1.0f, 0.08f, 0.032f);
+  testScene.getLightManager()->addPointLight(pl2);
+
+  std::unique_ptr<RenderEntity> lampEntity = blockRegistry.createBlock("x0v_block_lamp", BlockType("block_lamp", ShaderType::LightBlock));
+  lampEntity->getTransform().setPosition(glm::vec3(2.0f, -3.0f, 2.0f));
+  lampEntity->getMaterial()->getShader().setVec3("lightColor", glm::vec3(1.0f));
+  lampEntity->getTransform().setScale(glm::vec3(0.4f));
+
+  testScene.addEntity(std::move(lampEntity));
+
+  for (unsigned int i = 0; i < (sizeof(cubePositions) / sizeof(cubePositions[0])); i++)
   {
-    processInput(window.getWindow());
+    std::unique_ptr<RenderEntity> renderBlock;
 
-    renderer.initFrame(glm::vec3(0));
-    Scene testScene = Scene();
-
-    // add directional light
-    auto dirLightDir = glm::normalize(glm::vec3(camera.GetViewMatrix() * glm::vec4(0.3f, -1.0f, 0.2f, 0.0f)));
-    DirectionalLight dirLight = DirectionalLight(dirLightDir, glm::vec3(.4f), glm::vec3(.7f));
-    testScene.getLightManager()->addDirectionalLight(dirLight);
-
-    // add point light
-    auto pointLightPosition = camera.GetViewMatrix() * glm::vec4(glm::vec3(-2.0f, -3.0f, -2.0f), 1.0f);
-    PointLight pl = PointLight(pointLightPosition, glm::vec3(1.0f, 0.0f, .0f), glm::vec3(.1f), glm::vec3(.7f), 1.0f, 0.08f, 0.032f);
-    testScene.getLightManager()->addPointLight(pl);
-
-    std::unique_ptr<RenderEntity> lampEntity2 = blockRegistry.createBlock("x0v_block_lamp", BlockType("block_lamp", ShaderType::LightBlock));
-    lampEntity2->getTransform().setPosition(glm::vec3(-2.0f, -3.0f, -2.0f));
-    lampEntity2->getMaterial()->getShader().setVec3("lightColor", glm::vec3(1.0f));
-    lampEntity2->getTransform().setScale(glm::vec3(0.4f));
-
-    testScene.addEntity(std::move(lampEntity2));
-
-    // add point light 2
-    auto pointLightPosition2 = camera.GetViewMatrix() * glm::vec4(glm::vec3(2.0f, -3.0f, 2.0f), 1.0f);
-    PointLight pl2 = PointLight(pointLightPosition2, glm::vec3(1.0f, 1.0f, 0.0f), glm::vec3(.1f), glm::vec3(.7f), 1.0f, 0.08f, 0.032f);
-    testScene.getLightManager()->addPointLight(pl2);
-
-    std::unique_ptr<RenderEntity> lampEntity = blockRegistry.createBlock("x0v_block_lamp", BlockType("block_lamp", ShaderType::LightBlock));
-    lampEntity->getTransform().setPosition(glm::vec3(2.0f, -3.0f, 2.0f));
-    lampEntity->getMaterial()->getShader().setVec3("lightColor", glm::vec3(1.0f));
-    lampEntity->getTransform().setScale(glm::vec3(0.4f));
-
-    testScene.addEntity(std::move(lampEntity));
-
-    for (unsigned int i = 0; i < (sizeof(cubePositions) / sizeof(cubePositions[0])); i++)
+    switch (i % 5)
     {
-      std::unique_ptr<RenderEntity> renderBlock;
-
-      switch (i % 5)
-      {
-      case 0:
-        renderBlock = blockRegistry.createBlock("x0v_block_grass", BlockType("block_grass_top", "block_dirt", "block_grass_side"));
-        break;
-      case 1:
-        renderBlock = blockRegistry.createBlock("x0v_block_dirt", BlockType("block_dirt"));
-        break;
-      case 2:
-        renderBlock = blockRegistry.createBlock("x0v_block_diamond_ore", BlockType("block_diamond_ore", ShaderType::Surface, true));
-        break;
-      case 3:
-        renderBlock = blockRegistry.createBlock("x0v_block_sand", BlockType("block_sand"));
-        break;
-      case 4:
-        renderBlock = blockRegistry.createBlock("x0v_block_stone", BlockType("block_stone"));
-        break;
-      }
-
-      renderBlock->getTransform().setPosition(cubePositions[i]);
-
-      testScene.addEntity(std::move(renderBlock));
+    case 0:
+      renderBlock = blockRegistry.createBlock("x0v_block_grass", BlockType("block_grass_top", "block_dirt", "block_grass_side"));
+      break;
+    case 1:
+      renderBlock = blockRegistry.createBlock("x0v_block_dirt", BlockType("block_dirt"));
+      break;
+    case 2:
+      renderBlock = blockRegistry.createBlock("x0v_block_diamond_ore", BlockType("block_diamond_ore", ShaderType::Surface, true));
+      break;
+    case 3:
+      renderBlock = blockRegistry.createBlock("x0v_block_sand", BlockType("block_sand"));
+      break;
+    case 4:
+      renderBlock = blockRegistry.createBlock("x0v_block_stone", BlockType("block_stone"));
+      break;
     }
 
-    auto oakLog = blockRegistry.createBlock("x0v_block_oak_log", BlockType("block_oak_log_top", "block_oak_log_side"));
-    oakLog->getTransform().setPosition(glm::vec3(0.0f, -4.0f, 0.0f));
-    testScene.addEntity(std::move(oakLog));
+    renderBlock->getTransform().setPosition(cubePositions[i]);
 
-    oakLog = blockRegistry.createBlock("x0v_block_oak_log", BlockType("block_oak_log_top", "block_oak_log_side"));
-    oakLog->getTransform().setPosition(glm::vec3(0.0f, -3.0f, 0.0f));
-    testScene.addEntity(std::move(oakLog));
-
-    renderer.renderScene(&testScene);
-
-    window.swapBuffers();
-    window.pollEvents();
-
-    float currentFrame = static_cast<float>(glfwGetTime());
-    deltaTime = currentFrame - lastFrame;
-    lastFrame = currentFrame;
+    testScene.addEntity(std::move(renderBlock));
   }
 
-  return 0;
+  auto oakLog = blockRegistry.createBlock("x0v_block_oak_log", BlockType("block_oak_log_top", "block_oak_log_side"));
+  oakLog->getTransform().setPosition(glm::vec3(0.0f, -4.0f, 0.0f));
+  testScene.addEntity(std::move(oakLog));
+
+  oakLog = blockRegistry.createBlock("x0v_block_oak_log", BlockType("block_oak_log_top", "block_oak_log_side"));
+  oakLog->getTransform().setPosition(glm::vec3(0.0f, -3.0f, 0.0f));
+  testScene.addEntity(std::move(oakLog));
 }
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height)

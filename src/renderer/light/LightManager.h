@@ -17,13 +17,14 @@
 #include "renderer/light/lights/PointLight.h"
 #include "renderer/light/lights/SpotLight.h"
 #include "renderer/light/LightData.h"
+#include "renderer/camera/Camera.h"
 
 class LightManager
 {
 public:
   LightManager();
 
-  void updateUBO();
+  void updateUBO(Camera &activeCamera);
 
   void addDirectionalLight(const DirectionalLight &light);
   void addPointLight(const PointLight &light);

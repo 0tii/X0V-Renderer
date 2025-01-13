@@ -32,7 +32,7 @@ public:
   void renderEntity(RenderEntity &entity) const;
   void renderEntity(RenderEntity *entity) const;
 
-  void renderScene(Scene *scene) const;
+  void renderScene(Scene *scene, Camera &activeCamera) const;
 
   // --- debug ---
   void listCameras() const;

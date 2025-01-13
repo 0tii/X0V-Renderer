@@ -27,17 +27,47 @@ void Material::bind() const
   diffuseTexture.bind(0);
   shader.setInt("material.diffuse", 0);
 
+#ifdef DEBUG_VERBOSE
+  glBindTexture(GL_TEXTURE_2D, diffuseTexture->getTextureId());
+  int width, height, channels;
+  glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
+  glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &height);
+  glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &channels);
+  std::cout << "Binding diffuse texture: " << diffuseTexture->getTextureId() << std::endl;
+  std::cout << "Diffuse texture size: " << width << "x" << height << " channels: " << channels << std::endl;
+#endif
+
   // bind specular texture
   if (specularTexture)
   {
     specularTexture->bind(1);
     shader.setInt("material.specular", 1);
+
+#ifdef DEBUG_VERBOSE
+    glBindTexture(GL_TEXTURE_2D, specularTexture->getTextureId());
+    int width, height, channels;
+    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
+    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &height);
+    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &channels);
+    std::cout << "Binding specular texture: " << specularTexture->getTextureId() << std::endl;
+    std::cout << "Specular texture size: " << width << "x" << height << " channels: " << channels << std::endl;
+#endif
   }
 
   if (emissiveTexture)
   {
     emissiveTexture->bind(2);
     shader.setInt("material.emissive", 2);
+
+#ifdef DEBUG_VERBOSE
+    glBindTexture(GL_TEXTURE_2D, emissiveTexture->getTextureId());
+    int width, height, channels;
+    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
+    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &height);
+    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &channels);
+    std::cout << "binding emissive texture: " << emissiveTexture->getTextureId() << std::endl;
+    std::cout << "Emissive texture size: " << width << "x" << height << " channels: " << channels << std::endl;
+#endif
   }
 
   shader.setFloat("material.shininess", shininess);
