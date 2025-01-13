@@ -85,24 +85,24 @@ int main()
 
     // add point light
     auto pointLightPosition = camera.GetViewMatrix() * glm::vec4(glm::vec3(-2.0f, -3.0f, -2.0f), 1.0f);
-    PointLight pl = PointLight(pointLightPosition, glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(.1f), glm::vec3(.7f), 1.0f, 0.09f, 0.032f);
+    PointLight pl = PointLight(pointLightPosition, glm::vec3(1.0f, 0.0f, .0f), glm::vec3(.1f), glm::vec3(.7f), 1.0f, 0.08f, 0.032f);
     testScene.getLightManager()->addPointLight(pl);
 
     std::unique_ptr<RenderEntity> lampEntity2 = blockRegistry.createBlock("x0v_block_lamp", BlockType("block_lamp", ShaderType::LightBlock));
     lampEntity2->getTransform().setPosition(glm::vec3(-2.0f, -3.0f, -2.0f));
-    lampEntity2->getMaterial()->getShader().setVec3("lightColor", glm::vec3(0.0f, 0.0f, 1.0f));
+    lampEntity2->getMaterial()->getShader().setVec3("lightColor", glm::vec3(1.0f));
     lampEntity2->getTransform().setScale(glm::vec3(0.4f));
 
     testScene.addEntity(std::move(lampEntity2));
 
     // add point light 2
     auto pointLightPosition2 = camera.GetViewMatrix() * glm::vec4(glm::vec3(2.0f, -3.0f, 2.0f), 1.0f);
-    PointLight pl2 = PointLight(pointLightPosition, glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(.1f), glm::vec3(.7f), 1.0f, 0.09f, 0.032f);
+    PointLight pl2 = PointLight(pointLightPosition2, glm::vec3(1.0f, 1.0f, 0.0f), glm::vec3(.1f), glm::vec3(.7f), 1.0f, 0.08f, 0.032f);
     testScene.getLightManager()->addPointLight(pl2);
 
     std::unique_ptr<RenderEntity> lampEntity = blockRegistry.createBlock("x0v_block_lamp", BlockType("block_lamp", ShaderType::LightBlock));
     lampEntity->getTransform().setPosition(glm::vec3(2.0f, -3.0f, 2.0f));
-    lampEntity->getMaterial()->getShader().setVec3("lightColor", glm::vec3(1.0f, 0.0f, 0.0f));
+    lampEntity->getMaterial()->getShader().setVec3("lightColor", glm::vec3(1.0f));
     lampEntity->getTransform().setScale(glm::vec3(0.4f));
 
     testScene.addEntity(std::move(lampEntity));

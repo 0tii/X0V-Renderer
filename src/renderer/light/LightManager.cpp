@@ -33,10 +33,6 @@ void LightManager::updateUBO()
     glBindBuffer(GL_UNIFORM_BUFFER, lightUBO);
     glGetBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(LightData), &debugData);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
-    // Print values to confirm correctness.
-    std::cout << "Num Dir Lights: " << debugData.numDirectionalLights << std::endl;
-    std::cout << "First Dir Light Direction: " << debugData.directionalLights[0].direction.x << std::endl;
 }
 
 void LightManager::addDirectionalLight(const DirectionalLight &light)
@@ -152,13 +148,6 @@ void LightManager::initializeUBO()
     glBindBufferBase(GL_UNIFORM_BUFFER, 0, lightUBO);
 
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
-    std::cout << "Size of DirectionalLight: " << sizeof(DirectionalLight) << " bytes\n";
-    std::cout << "Size of PointLight: " << sizeof(PointLight) << " bytes\n";
-    std::cout << "Size of SpotLight: " << sizeof(SpotLight) << " bytes\n";
-    std::cout << "Size of LightData: " << sizeof(LightData) << " bytes\n";
-
-    std::cout << "Size of LightData: " << sizeof(LightData) << " bytes" << std::endl;
 }
 
 float LightManager::getPointLightSphereOfInfluence(const PointLight &light, float threshold) const
