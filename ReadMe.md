@@ -13,11 +13,7 @@ Libraries used currently:
 
 ## Current Screenshot
 
-![img](https://i.imgur.com/FaSGmWi.png "Current state")
-
-![img](https://i.imgur.com/Kh2lODh.png)
-
-![img](https://i.imgur.com/uxtu0hr.png)
+![img](https://i.imgur.com/HOazaBC.png)
 
 ## Features
 
@@ -30,11 +26,12 @@ Libraries used currently:
 * [X] BlockRegistry
 * [ ] Frustrum Culling
 * [X] Diffuse / Specular Lighting
-* [X] Colored Light
-* [ ] Scene
-* [ ] Lighting Abstraction
-* [ ] Light culling
-* [ ] Single light UBO with <= 1 update per frame
+* [X] Emissive Textures
+* [X] Colored LightScene
+* [X] Lighting Abstraction
+* [X] Light culling
+* [X] Arbitrary light numbers
+* [X] Arbitrary light optimization (single UBO)
 * [ ] Scene Graph
 * [ ] 3D Object loading (.obj, .fbx)
 * [ ] PBR

@@ -58,8 +58,6 @@ int main()
 
   while (!window.shouldClose())
   {
-    std::cout << "\n---- Start of Frame ----\n";
-
     processInput(window.getWindow());
 
     renderer.initFrame(glm::vec3(0));
