@@ -38,6 +38,8 @@ public:
   RenderEntity &getBlockRenderEntity(const std::string &id);
   const RenderEntity &getBlockRenderEntity(const std::string &id) const;
 
+  std::unique_ptr<RenderEntity> createBlock(const std::string &blockId, const BlockType &blockType);
+
   bool hasBlock(const std::string &blockId) const;
 
 private:
@@ -47,6 +49,8 @@ private:
   std::unordered_map<std::string, std::unique_ptr<RenderEntity>> blocks;
 
   TextureAtlas textureAtlas;
+  TextureAtlas specularAtlas;
+  TextureAtlas emissionAtlas;
   Texture atlasTexture;
   BlockMeshGenerator meshGenerator;
 };

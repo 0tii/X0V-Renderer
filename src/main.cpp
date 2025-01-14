@@ -3,8 +3,6 @@
 #include <iostream>
 
 #include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
 #include "renderer/camera/Camera.h"
 #include "renderer/window/window.h"
@@ -12,11 +10,16 @@
 #include "renderer/render_entity/RenderEntity.h"
 #include "renderer/block/BlockRegistry.h"
 #include "renderer/shader/ShaderProvider.h"
+#include "renderer/color/Color.h"
+#include "renderer/scene/Scene.h"
+#include "renderer/light/lights/PointLight.h"
+#include "renderer/light/lights/DirectionalLight.h"
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
 void mouse_callback(GLFWwindow *window, double xpos, double ypos);
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
+void modifyScene(Scene &testScene, BlockRegistry &blockRegistry);
 
 const unsigned int SCR_WIDTH = 1280;
 const unsigned int SCR_HEIGHT = 720;
@@ -48,19 +51,34 @@ int main()
   camera.SetProjectionMatrix(fov, (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
   renderer.setActiveCamera(&camera);
 
-  // init blockregistry
   BlockRegistry &blockRegistry = BlockRegistry::getInstance();
 
-  RenderEntity *cubeEntities[] = {
-      &blockRegistry.getBlockRenderEntity("x0v_block_dirt"),
-      &blockRegistry.getBlockRenderEntity("x0v_block_diamond_ore"),
-      &blockRegistry.getBlockRenderEntity("x0v_block_sand"),
-      &blockRegistry.getBlockRenderEntity("x0v_block_grass"),
-      &blockRegistry.getBlockRenderEntity("x0v_block_stone"),
-  };
+  Scene testScene = Scene();
+  modifyScene(testScene, blockRegistry);
 
-  RenderEntity *lamp = &blockRegistry.getBlockRenderEntity("x0v_block_lamp");
+  while (!window.shouldClose())
+  {
+    std::cout << "\n---- Start of Frame ----\n";
 
+    processInput(window.getWindow());
+
+    renderer.initFrame(glm::vec3(0));
+
+    renderer.renderScene(&testScene, camera);
+
+    window.swapBuffers();
+    window.pollEvents();
+
+    float currentFrame = static_cast<float>(glfwGetTime());
+    deltaTime = currentFrame - lastFrame;
+    lastFrame = currentFrame;
+  }
+
+  return 0;
+}
+
+void modifyScene(Scene &testScene, BlockRegistry &blockRegistry)
+{
   glm::vec3 cubePositions[] = {
       glm::vec3(-1.0f, -5.0f, -1.0f),
       glm::vec3(0.0f, -5.0f, -1.0f),
@@ -79,50 +97,70 @@ int main()
       glm::vec3(1.0f, -5.0f, 2.0f),
       glm::vec3(2.0f, -5.0f, 2.0f)};
 
-  bool moveLight = false;
-  glm::vec3 lightPos(-3.0f, -2.5f, 1.0f);
+  // add directional light
+  auto dirLightDir = glm::normalize(glm::vec3(glm::vec4(0.3f, -1.0f, 0.2f, 0.0f)));
+  DirectionalLight dirLight = DirectionalLight(dirLightDir, glm::vec3(.4f), glm::vec3(.7f));
+  testScene.getLightManager()->addDirectionalLight(dirLight);
 
-  while (!window.shouldClose())
+  // add point light
+  auto pointLightPosition = glm::vec3(-2.0f, -3.0f, -2.0f);
+  PointLight pl = PointLight(pointLightPosition, glm::vec3(1.0f, 0.0f, .0f), glm::vec3(.1f), glm::vec3(.7f), 1.0f, 0.08f, 0.032f);
+  testScene.getLightManager()->addPointLight(pl);
+
+  std::unique_ptr<RenderEntity> lampEntity2 = blockRegistry.createBlock("x0v_block_lamp", BlockType("block_lamp", ShaderType::LightBlock));
+  lampEntity2->getTransform().setPosition(glm::vec3(-2.0f, -3.0f, -2.0f));
+  lampEntity2->getMaterial()->getShader().setVec3("lightColor", glm::vec3(1.0f));
+  lampEntity2->getTransform().setScale(glm::vec3(0.4f));
+
+  testScene.addEntity(std::move(lampEntity2));
+
+  // add point light 2
+  auto pointLightPosition2 = glm::vec3(2.0f, -3.0f, 2.0f);
+  PointLight pl2 = PointLight(pointLightPosition2, glm::vec3(1.0f, 1.0f, 0.0f), glm::vec3(.1f), glm::vec3(.7f), 1.0f, 0.08f, 0.032f);
+  testScene.getLightManager()->addPointLight(pl2);
+
+  std::unique_ptr<RenderEntity> lampEntity = blockRegistry.createBlock("x0v_block_lamp", BlockType("block_lamp", ShaderType::LightBlock));
+  lampEntity->getTransform().setPosition(glm::vec3(2.0f, -3.0f, 2.0f));
+  lampEntity->getMaterial()->getShader().setVec3("lightColor", glm::vec3(1.0f));
+  lampEntity->getTransform().setScale(glm::vec3(0.4f));
+
+  testScene.addEntity(std::move(lampEntity));
+
+  for (unsigned int i = 0; i < (sizeof(cubePositions) / sizeof(cubePositions[0])); i++)
   {
-    processInput(window.getWindow());
+    std::unique_ptr<RenderEntity> renderBlock;
 
-    renderer.initFrame();
-
-    if (moveLight)
+    switch (i % 5)
     {
-      float time = glfwGetTime();
-      lightPos.x = sin(time * 0.5f) * 2.0f;
-      lightPos.z = cos(time * 0.5f) * 2.0f;
+    case 0:
+      renderBlock = blockRegistry.createBlock("x0v_block_grass", BlockType("block_grass_top", "block_dirt", "block_grass_side"));
+      break;
+    case 1:
+      renderBlock = blockRegistry.createBlock("x0v_block_dirt", BlockType("block_dirt"));
+      break;
+    case 2:
+      renderBlock = blockRegistry.createBlock("x0v_block_diamond_ore", BlockType("block_diamond_ore", ShaderType::Surface, true));
+      break;
+    case 3:
+      renderBlock = blockRegistry.createBlock("x0v_block_sand", BlockType("block_sand"));
+      break;
+    case 4:
+      renderBlock = blockRegistry.createBlock("x0v_block_stone", BlockType("block_stone"));
+      break;
     }
 
-    // set shader uniforms
-    ShaderProvider::getInstance().getShader(ShaderType::Block).setVec3("lightPos", lightPos);
-    ShaderProvider::getInstance().getShader(ShaderType::Block).setVec3("lightColor", glm::vec3(1.0f, 0.8f, 0.55f));
-    ShaderProvider::getInstance().getShader(ShaderType::Block).setVec3("viewPos", camera.Position);
+    renderBlock->getTransform().setPosition(cubePositions[i]);
 
-    for (unsigned int i = 0; i < (sizeof(cubePositions) / sizeof(cubePositions[0])); i++)
-    {
-      // enable wireframe for every 2nd block
-      // renderer.setWireframeRendering((i % 3 == 0));
-
-      cubeEntities[i % 5]->getTransform().setPosition(cubePositions[i]);
-
-      renderer.renderEntity(cubeEntities[i % 5]);
-    }
-
-    lamp->getTransform().setPosition(lightPos);
-    lamp->getTransform().setScale(glm::vec3(0.4f));
-    renderer.renderEntity(lamp);
-
-    window.swapBuffers();
-    window.pollEvents();
-
-    float currentFrame = static_cast<float>(glfwGetTime());
-    deltaTime = currentFrame - lastFrame;
-    lastFrame = currentFrame;
+    testScene.addEntity(std::move(renderBlock));
   }
 
-  return 0;
+  auto oakLog = blockRegistry.createBlock("x0v_block_oak_log", BlockType("block_oak_log_top", "block_oak_log_side"));
+  oakLog->getTransform().setPosition(glm::vec3(0.0f, -4.0f, 0.0f));
+  testScene.addEntity(std::move(oakLog));
+
+  oakLog = blockRegistry.createBlock("x0v_block_oak_log", BlockType("block_oak_log_top", "block_oak_log_side"));
+  oakLog->getTransform().setPosition(glm::vec3(0.0f, -3.0f, 0.0f));
+  testScene.addEntity(std::move(oakLog));
 }
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height)

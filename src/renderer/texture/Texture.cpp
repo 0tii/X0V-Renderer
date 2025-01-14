@@ -64,12 +64,6 @@ Texture::~Texture()
 
 void Texture::bind(unsigned int unit)
 {
-  if (unit > maxUnits)
-  {
-    std::cout << "Texture unit " << unit << " is not supported, max is GL_TEXTURE" << maxUnits << std::endl;
-    return;
-  }
-
   glActiveTexture(GL_TEXTURE0 + unit);
   glBindTexture(GL_TEXTURE_2D, textureId);
 }

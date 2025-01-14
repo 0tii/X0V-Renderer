@@ -42,6 +42,7 @@ glm::mat4 Camera::GetProjectionMatrix() const
 void Camera::ProcessKeyboard(Camera_Movement direction, float deltaTime)
 {
   float velocity = MovementSpeed * deltaTime;
+  auto previousPosition = Position;
 
   if (direction == Camera_Movement::FORWARD)
     Position += Front * velocity;
@@ -51,6 +52,9 @@ void Camera::ProcessKeyboard(Camera_Movement direction, float deltaTime)
     Position -= Right * velocity;
   if (direction == Camera_Movement::RIGHT)
     Position += Right * velocity;
+
+  if (!yFlying)
+    Position.y = previousPosition.y;
 
   if (direction == Camera_Movement::UP)
     Position += Up * velocity;
@@ -85,6 +89,11 @@ void Camera::ProcessMouseScroll(float offset)
     Zoom = 0.2f;
   if (Zoom > 45.0f)
     Zoom = 45.0f;
+}
+
+void Camera::setFlyY(bool value)
+{
+  yFlying = value;
 }
 
 void Camera::updateCameraVectors()
