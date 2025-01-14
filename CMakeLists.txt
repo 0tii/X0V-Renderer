@@ -43,5 +43,18 @@ target_include_directories(X0V
 )
 
 # linking
+target_link_directories(X0V PUBLIC ${CMAKE_SOURCE_DIR}/../Deps/lib/glfw)
+target_link_directories(X0V PUBLIC ${CMAKE_SOURCE_DIR}/../Deps/lib/assimp)
 target_link_directories(X0V PUBLIC ${CMAKE_SOURCE_DIR}/../Deps/lib)
-target_link_libraries(X0V glfw3 opengl32)
+target_link_libraries(X0V glfw3 opengl32 assimp-vc142-mtd)
+
+# copy assimp dll to project folder
+set(ASSIMP_DLL_PATH ${CMAKE_SOURCE_DIR}/../Deps/bin/assimp/assimp-vc142-mtd.dll)
+
+add_custom_command(
+    TARGET ${PROJECT_NAME}
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+        ${ASSIMP_DLL_PATH}
+        $<TARGET_FILE_DIR:${PROJECT_NAME}>
+)
